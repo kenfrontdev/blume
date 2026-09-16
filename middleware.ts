@@ -1,7 +1,15 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
-import { NextResponse, type NextRequest } from "next/server";
+import {
+  NextResponse,
+  type NextFetchEvent,
+  type NextMiddleware,
+  type NextRequest,
+} from "next/server";
 
-const MARKETING_HOSTS = new Set(["getblume.ai", "www.getblume.ai"]);
+const MARKETING_HOSTS = new Set([
+  "getblume.ai",
+  "www.getblume.ai",
+]);
 const APP_HOSTS = new Set(["app.getblume.ai", "app.localhost"]);
 
 const DEV_HOST_COOKIE = "blume-host";
@@ -92,27 +100,64 @@ const rewriteForSurface = (request: NextRequest) => {
   return response;
 };
 
+const hasClerkSecret = () =>
+  Boolean(process.env.CLERK_SECRET_KEY?.startsWith("sk_"));
+
+let portalClerkMiddleware: NextMiddleware | null = null;
+
+const getPortalClerkMiddleware = (): NextMiddleware => {
+  if (portalClerkMiddleware) return portalClerkMiddleware;
+
+  /**
+   * Portal-only Clerk handler. Uses a plain /sign-in redirect instead of
+   * auth.protect(), which can crash the Edge middleware when Clerk env
+   * (sign-in URL / keys) is incomplete — Vercel surfaces that as
+   * MIDDLEWARE_INVOCATION_FAILED.
+   */
+  portalClerkMiddleware = clerkMiddleware(async (auth, request) => {
+    const { pathname } = request.nextUrl;
+
+    if (!isAssetPath(pathname) && !isPublicPortalPath(pathname)) {
+      const { userId } = await auth();
+      if (!userId) {
+        const signIn = new URL("/sign-in", request.url);
+        signIn.searchParams.set("redirect_url", request.nextUrl.pathname);
+        return NextResponse.redirect(signIn);
+      }
+    }
+
+    return rewriteForSurface(request);
+  });
+
+  return portalClerkMiddleware;
+};
+
 /**
- * Always run Clerk middleware (do not gate on env checks — those were
- * baked empty at build and skipped auth entirely).
- *
- * - getblume.ai → /web/* (public marketing)
- * - app.getblume.ai → /app/* (auth required except sign-in / sign-up)
+ * - getblume.ai / www → rewrite to /web/* only (never invokes Clerk)
+ * - app.getblume.ai → Clerk session check + rewrite to /app/*
  */
-export default clerkMiddleware(async (auth, request) => {
+export default function middleware(
+  request: NextRequest,
+  event: NextFetchEvent,
+) {
   const surface = resolveSurface(request);
   const { pathname } = request.nextUrl;
-  const onPortal =
-    surface === "portal" ||
-    isPortalPath(pathname) ||
-    pathname.startsWith("/__clerk");
 
-  if (onPortal && !isAssetPath(pathname) && !isPublicPortalPath(pathname)) {
-    await auth.protect();
+  const marketingOnly =
+    surface === "marketing" &&
+    !isPortalPath(pathname) &&
+    !pathname.startsWith("/__clerk");
+
+  if (marketingOnly) {
+    return rewriteForSurface(request);
   }
 
-  return rewriteForSurface(request);
-});
+  if (!hasClerkSecret()) {
+    return rewriteForSurface(request);
+  }
+
+  return getPortalClerkMiddleware()(request, event);
+}
 
 export const config = {
   matcher: [
