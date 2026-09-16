@@ -22,7 +22,8 @@ yarn-debug.log*
 yarn-error.log*
 
 # drizzle
-/drizzle/meta/
+# Keep /drizzle SQL + meta/_journal committed so migrate works everywhere.
+# Local drizzle-kit caches only:
 
 # typescript
 next-env.d.ts
