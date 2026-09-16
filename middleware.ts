@@ -1,9 +1,5 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
-import {
-  NextResponse,
-  type NextFetchEvent,
-  type NextRequest,
-} from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
 const MARKETING_HOSTS = new Set(["getblume.ai", "www.getblume.ai"]);
 const APP_HOSTS = new Set(["app.getblume.ai", "app.localhost"]);
@@ -11,14 +7,6 @@ const APP_HOSTS = new Set(["app.getblume.ai", "app.localhost"]);
 const DEV_HOST_COOKIE = "blume-host";
 
 type Surface = "marketing" | "portal";
-
-const hasClerkKeys = () => {
-  const pk = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-  const sk = process.env.CLERK_SECRET_KEY;
-  if (!pk || !sk) return false;
-  if (pk.includes("placeholder") || sk.includes("placeholder")) return false;
-  return pk.startsWith("pk_") && sk.startsWith("sk_");
-};
 
 const isAssetPath = (pathname: string) =>
   pathname.startsWith("/_next") ||
@@ -105,37 +93,26 @@ const rewriteForSurface = (request: NextRequest) => {
 };
 
 /**
- * Hostname-based surface split + portal auth gate:
- * - getblume.ai → /web/* (public)
- * - app.getblume.ai → /app/* (requires Clerk sign-in except /sign-in, /sign-up)
+ * Always run Clerk middleware (do not gate on env checks — those were
+ * baked empty at build and skipped auth entirely).
+ *
+ * - getblume.ai → /web/* (public marketing)
+ * - app.getblume.ai → /app/* (auth required except sign-in / sign-up)
  */
-const clerkHandler = hasClerkKeys()
-  ? clerkMiddleware(async (auth, request) => {
-      const surface = resolveSurface(request);
-      const { pathname } = request.nextUrl;
-      const onPortal =
-        surface === "portal" ||
-        isPortalPath(pathname) ||
-        pathname.startsWith("/__clerk");
+export default clerkMiddleware(async (auth, request) => {
+  const surface = resolveSurface(request);
+  const { pathname } = request.nextUrl;
+  const onPortal =
+    surface === "portal" ||
+    isPortalPath(pathname) ||
+    pathname.startsWith("/__clerk");
 
-      if (onPortal && !isAssetPath(pathname) && !isPublicPortalPath(pathname)) {
-        await auth.protect();
-      }
-
-      return rewriteForSurface(request);
-    })
-  : null;
-
-export default function middleware(
-  request: NextRequest,
-  event: NextFetchEvent,
-) {
-  if (clerkHandler) {
-    return clerkHandler(request, event);
+  if (onPortal && !isAssetPath(pathname) && !isPublicPortalPath(pathname)) {
+    await auth.protect();
   }
 
   return rewriteForSurface(request);
-}
+});
 
 export const config = {
   matcher: [
