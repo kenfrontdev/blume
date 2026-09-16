@@ -22,23 +22,24 @@ export const metadata: Metadata = {
   description: "Spec-driven development management platform",
 };
 
-/**
- * Always wrap with ClerkProvider. Gating on env at build time caused
- * production deploys to omit the provider (NEXT_PUBLIC_* inlined empty)
- * while <SignIn /> still mounted — hence useSession errors.
- *
- * Requires NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY + CLERK_SECRET_KEY on Vercel,
- * then a fresh deploy so the publishable key is baked into the build.
- */
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Read inside the render path. Marketing pages do not use Clerk components,
+  // so skipping the provider when the key is absent keeps getblume.ai up.
+  const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+  const withClerk = Boolean(publishableKey?.startsWith("pk_"));
+
   return (
     <html lang="en" className={`${plexSans.variable} ${plexMono.variable}`}>
       <body>
-        <ClerkProvider>{children}</ClerkProvider>
+        {withClerk && publishableKey ? (
+          <ClerkProvider publishableKey={publishableKey}>{children}</ClerkProvider>
+        ) : (
+          children
+        )}
       </body>
     </html>
   );
