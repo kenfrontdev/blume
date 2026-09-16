@@ -11,7 +11,9 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "compile": "tsx compiler/cli.ts",
-    "compile:selfcheck": "tsx compiler/selfcheck.ts"
+    "compile:selfcheck": "tsx compiler/selfcheck.ts",
+    "trust:selfcheck": "tsx lib/trust/selfcheck.ts",
+    "ingest": "tsx scripts/ingest.ts"
   },
   "dependencies": {
     "next": "^15.0.0",

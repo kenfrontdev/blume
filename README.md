@@ -94,12 +94,24 @@ deterministic heuristic so the pipeline can be exercised.
 
 ## What's not built yet
 
-This scaffold covers the data model, build-agent rules, and the first
-compiler slice. Still downstream:
+This scaffold covers the data model, build-agent rules, the first
+compiler slice, and trust-score / release-gate wiring. Still downstream:
 
 - LLM UI-target resolution against a live a11y tree (§4)
 - The MCP server for ideation + coding-agent tool exposure, §1 / §12
 - The swarm orchestration layer, §6
 - The actual portal UI (dashboard, build timeline, root-cause chat), §10
 - Auth provider integration, §11
-- Trust-score computation + release gate wiring, §0 / §7
+- Live Playwright run → trust score (today `--assume pass|fail` stands in)
+
+## Trust score & release gate (§0 / §7)
+
+```bash
+npm run trust:selfcheck
+npm run ingest --                                    # upsert specs into Neon
+npm run ingest -- --score join-live-match --assume pass --record
+```
+
+Computes **execution score** (criticality-weighted) and **confidence
+ceiling** (Recommended-tier gaps, floor 40), then evaluates the release
+gate (auto-ship vs soft-stop vs hard-stop).
