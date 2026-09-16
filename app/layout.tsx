@@ -1,22 +1,23 @@
 import type { Metadata } from "next";
-import { ClerkProvider } from "@clerk/nextjs";
-import { Syne, Source_Sans_3 } from "next/font/google";
+import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
 
-const syne = Syne({
+const plexSans = IBM_Plex_Sans({
   subsets: ["latin"],
-  variable: "--font-syne",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-sans",
   display: "swap",
 });
 
-const sourceSans = Source_Sans_3({
+const plexMono = IBM_Plex_Mono({
   subsets: ["latin"],
-  variable: "--font-source-sans",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-mono",
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Corin",
+  title: "Blume",
   description: "Spec-driven development management platform",
 };
 
@@ -26,10 +27,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${syne.variable} ${sourceSans.variable}`}>
-      <body>
-        <ClerkProvider>{children}</ClerkProvider>
-      </body>
+    <html lang="en" className={`${plexSans.variable} ${plexMono.variable}`}>
+      <body>{children}</body>
     </html>
   );
 }

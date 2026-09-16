@@ -1,9 +1,9 @@
 #!/usr/bin/env npx tsx
 /**
- * Corin MCP server (§1 ideation + §12 coding-agent), one process,
- * role-gated tool exposure via CORIN_MCP_ROLE=ideation|coding.
+ * Blume MCP server (§1 ideation + §12 coding-agent), one process,
+ * role-gated tool exposure via BLUME_MCP_ROLE=ideation|coding.
  *
- *   CORIN_MCP_ROLE=coding npm run mcp
+ *   BLUME_MCP_ROLE=coding npm run mcp
  */
 import "dotenv/config";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
@@ -20,7 +20,7 @@ import { evaluateCompleteness } from "../lib/trust/completeness";
 import { db } from "../lib/db";
 import { buildNotes, retryAttempts } from "../db/schema";
 
-const role = (process.env.CORIN_MCP_ROLE ?? "coding") as "ideation" | "coding";
+const role = (process.env.BLUME_MCP_ROLE ?? "coding") as "ideation" | "coding";
 const root = process.cwd();
 
 const loadSpec = (id: string) => {
@@ -121,7 +121,7 @@ const tools = role === "ideation" ? ideationTools : codingTools;
 
 const main = async () => {
   const server = new Server(
-    { name: "corin", version: "0.1.0" },
+    { name: "blume", version: "0.1.0" },
     { capabilities: { tools: {} } }
   );
 

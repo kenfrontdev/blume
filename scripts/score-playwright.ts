@@ -33,7 +33,7 @@ const assumeIdx = args.indexOf("--assume");
 const assume = assumeIdx >= 0 ? (args[assumeIdx + 1] as "pass" | "fail") : null;
 const skipRun = args.includes("--skip-run");
 const shouldRecord = args.includes("--record");
-const projectId = process.env.CORIN_DEFAULT_PROJECT_SLUG ?? "carromlive";
+const projectId = process.env.BLUME_DEFAULT_PROJECT_SLUG ?? "carromlive";
 
 if (!specId) {
   console.error(

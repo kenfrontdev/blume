@@ -3,17 +3,17 @@ import { eq, and } from "drizzle-orm";
 import { getDb } from "@/lib/db";
 import { projectRoles } from "@/db/schema";
 
-export type CorinRole = "quality_owner" | "contributor";
+export type BlumeRole = "quality_owner" | "contributor";
 
 /**
- * §11 — identity from Clerk; roles enforced in Corin via project_roles.
+ * §11 — identity from Clerk; roles enforced in Blume via project_roles.
  */
 export const auth = clerkAuth;
 
 export const getProjectRole = async (
   userId: string,
   projectId: string
-): Promise<CorinRole | null> => {
+): Promise<BlumeRole | null> => {
   const database = getDb();
   if (!database) return null;
   const rows = await database
@@ -26,7 +26,7 @@ export const getProjectRole = async (
       )
     )
     .limit(1);
-  return (rows[0]?.role as CorinRole) ?? null;
+  return (rows[0]?.role as BlumeRole) ?? null;
 };
 
 export const requireQualityOwner = async (

@@ -1,6 +1,6 @@
 /**
  * Canonical spec JSON + compiler intermediate form.
- * Shape matches specs/docs/corin-decision-log.md §2 / §4.
+ * Shape matches specs/docs/blume-decision-log.md §2 / §4.
  */
 
 export type SpecLayer = "ui" | "mobile" | "api" | "data";

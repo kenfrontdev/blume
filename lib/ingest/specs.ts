@@ -38,7 +38,7 @@ export const ingestSpecs = async (options?: {
 }): Promise<{ upserted: string[] }> => {
   const projectId =
     options?.projectId ??
-    process.env.CORIN_DEFAULT_PROJECT_SLUG ??
+    process.env.BLUME_DEFAULT_PROJECT_SLUG ??
     "carromlive";
   const rootDir = options?.rootDir ?? process.cwd();
 
