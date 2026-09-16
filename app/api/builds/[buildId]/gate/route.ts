@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { randomUUID } from "node:crypto";
 import { eq } from "drizzle-orm";
+import { auth, requireQualityOwner } from "@/auth";
 import { getDb } from "@/lib/db";
-import { builds, gateDecisions } from "@/db/schema";
+import { builds, gateDecisions, specs } from "@/db/schema";
 import {
   OVERRIDE_REASONS,
   type OverrideReason,
@@ -18,6 +19,11 @@ export async function POST(
   request: Request,
   context: { params: Promise<{ buildId: string }> }
 ) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { buildId } = await context.params;
   const db = getDb();
   if (!db) {
@@ -70,6 +76,21 @@ export async function POST(
       return NextResponse.json({ error: "Build not found." }, { status: 404 });
     }
 
+    const specRows = await db
+      .select()
+      .from(specs)
+      .where(eq(specs.id, existing[0].specId))
+      .limit(1);
+    const projectId = specRows[0]?.projectId ?? "carromlive";
+
+    const isOwner = await requireQualityOwner(session.user.id, projectId);
+    if (!isOwner && action === "override") {
+      return NextResponse.json(
+        { error: "Only quality owners may override the gate (§11)." },
+        { status: 403 }
+      );
+    }
+
     const decision = action === "approve" ? "approved" : "overridden";
     const id = randomUUID();
 
@@ -78,7 +99,7 @@ export async function POST(
       buildId,
       decision,
       overrideReason,
-      decidedBy: body.decided_by ?? "portal",
+      decidedBy: body.decided_by ?? session.user.id,
     });
 
     await db

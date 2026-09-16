@@ -8,7 +8,8 @@ import type {
   IntermediateScenario,
   InterfaceContractTrailing,
 } from "./types";
-import { resolveUiTarget } from "./resolve-targets";
+import type { A11yNode, TargetResolver } from "./resolve-targets-llm";
+import { createTargetResolver } from "./resolve-targets-llm";
 
 const makeSeed = (): string => randomBytes(8).toString("hex");
 
@@ -40,7 +41,11 @@ const isSystemEvent = (when: string): boolean =>
     when
   ) && !/\b(tap|click|press|user)\b/i.test(when);
 
-const uiWhenToSteps = (when: string): IntermediateAction[] => {
+const uiWhenToSteps = async (
+  when: string,
+  resolve: TargetResolver,
+  a11yTree?: A11yNode | null
+): Promise<IntermediateAction[]> => {
   if (isSystemEvent(when)) {
     return [
       {
@@ -50,46 +55,54 @@ const uiWhenToSteps = (when: string): IntermediateAction[] => {
       },
     ];
   }
-  const resolved = resolveUiTarget(when);
+  const resolved = await resolve(when, { a11yTree });
   return [{ action: "tap", target: when, resolved }];
 };
 
-const uiThenToSteps = (thens: string[]): IntermediateAction[] => {
+const uiThenToSteps = async (
+  thens: string[],
+  resolve: TargetResolver,
+  a11yTree?: A11yNode | null
+): Promise<IntermediateAction[]> => {
   const timeoutMs = extractTimeoutMs(thens);
-  return thens.map((t) => {
+  const steps: IntermediateAction[] = [];
+  for (const t of thens) {
     if (/no partial|does not (leave|retain)|left behind/i.test(t)) {
-      return {
-        action: "assert" as const,
-        assert: "noPartialState" as const,
+      steps.push({
+        action: "assert",
+        assert: "noPartialState",
         target: t,
-      };
+      });
+      continue;
     }
-    const resolved = resolveUiTarget(t);
+    const resolved = await resolve(t, { a11yTree });
     const isTimeout = /within\s+\d+\s*seconds?/i.test(t);
-    return {
-      action: "assert" as const,
-      assert: "elementVisible" as const,
+    steps.push({
+      action: "assert",
+      assert: "elementVisible",
       target: t,
       timeoutMs: isTimeout ? timeoutMs : undefined,
       resolved,
-    };
-  });
+    });
+  }
+  return steps;
 };
 
-const uiScenarioSteps = (
+const uiScenarioSteps = async (
   criterion: Pick<AcceptanceCriterion | EdgeCase, "given" | "when" | "then">,
-  preconditions: string[]
-): IntermediateAction[] => {
+  preconditions: string[],
+  resolve: TargetResolver,
+  a11yTree?: A11yNode | null
+): Promise<IntermediateAction[]> => {
   const steps: IntermediateAction[] = [
     {
       action: "setup",
       description: [criterion.given, ...preconditions].filter(Boolean).join("; "),
     },
-    ...uiWhenToSteps(criterion.when),
-    ...uiThenToSteps(criterion.then),
+    ...(await uiWhenToSteps(criterion.when, resolve, a11yTree)),
+    ...(await uiThenToSteps(criterion.then, resolve, a11yTree)),
   ];
 
-  // §4 free viewport-bounds baseline for every resolved interactive target
   for (const step of [...steps]) {
     if (
       (step.action === "tap" || step.action === "click") &&
@@ -176,15 +189,17 @@ const apiScenarioSteps = (
   return steps;
 };
 
-const buildScenarioFromAc = (
+const buildScenarioFromAc = async (
   spec: CanonicalSpec,
   ac: AcceptanceCriterion,
-  concrete: Record<string, string | number>
-): IntermediateScenario => {
+  concrete: Record<string, string | number>,
+  resolve: TargetResolver,
+  a11yTree?: A11yNode | null
+): Promise<IntermediateScenario> => {
   const steps =
     spec.layer === "api" && spec.trailing.type === "interface_contract"
       ? apiScenarioSteps(ac, spec.trailing, concrete)
-      : uiScenarioSteps(ac, spec.preconditions);
+      : await uiScenarioSteps(ac, spec.preconditions, resolve, a11yTree);
 
   return {
     id: ac.id,
@@ -195,15 +210,17 @@ const buildScenarioFromAc = (
   };
 };
 
-const buildScenarioFromEc = (
+const buildScenarioFromEc = async (
   spec: CanonicalSpec,
   ec: EdgeCase,
-  concrete: Record<string, string | number>
-): IntermediateScenario => {
+  concrete: Record<string, string | number>,
+  resolve: TargetResolver,
+  a11yTree?: A11yNode | null
+): Promise<IntermediateScenario> => {
   const steps =
     spec.layer === "api" && spec.trailing.type === "interface_contract"
       ? apiScenarioSteps(ec, spec.trailing, concrete)
-      : uiScenarioSteps(ec, spec.preconditions);
+      : await uiScenarioSteps(ec, spec.preconditions, resolve, a11yTree);
 
   return {
     id: ec.id,
@@ -234,35 +251,67 @@ const buildComposedScenario = (
   };
 };
 
-export const toIntermediate = (
+export type ToIntermediateOptions = {
+  seed?: string;
+  /** heuristic (default for selfcheck) | llm (§4 provider-diverse step) */
+  resolver?: "heuristic" | "llm" | TargetResolver;
+  a11yTree?: A11yNode | null;
+};
+
+export const toIntermediate = async (
   spec: CanonicalSpec,
-  options?: { seed?: string }
-): IntermediateForm => {
+  options?: ToIntermediateOptions
+): Promise<IntermediateForm> => {
   const seed = options?.seed ?? makeSeed();
   const concreteValues = concreteFromSeed(seed, spec.layer);
   const notes: string[] = [];
 
-  if (spec.layer === "ui" || spec.layer === "mobile") {
+  const resolve: TargetResolver =
+    typeof options?.resolver === "function"
+      ? options.resolver
+      : createTargetResolver(options?.resolver ?? "heuristic");
+
+  if (
+    (spec.layer === "ui" || spec.layer === "mobile") &&
+    options?.resolver !== "llm" &&
+    typeof options?.resolver !== "function"
+  ) {
     notes.push(
-      "UI targets resolved heuristically. §4 LLM accessibility-tree resolution is not wired yet; replace resolve-targets.ts with a provider-diverse LLM step at build-test time."
+      "UI targets resolved heuristically. Pass resolver:'llm' (CORIN_COMPILER_LLM_*) for §4 accessibility-tree resolution."
     );
   }
 
   const active = spec.acceptance_criteria.filter((ac) => ac.status === "active");
-  const scenarios: IntermediateScenario[] = [
-    ...active.map((ac) => buildScenarioFromAc(spec, ac, concreteValues)),
-    ...spec.edge_cases.map((ec) => buildScenarioFromEc(spec, ec, concreteValues)),
-  ];
+  const scenarios: IntermediateScenario[] = [];
+  for (const ac of active) {
+    scenarios.push(
+      await buildScenarioFromAc(
+        spec,
+        ac,
+        concreteValues,
+        resolve,
+        options?.a11yTree
+      )
+    );
+  }
+  for (const ec of spec.edge_cases) {
+    scenarios.push(
+      await buildScenarioFromEc(
+        spec,
+        ec,
+        concreteValues,
+        resolve,
+        options?.a11yTree
+      )
+    );
+  }
 
   const composed = buildComposedScenario(scenarios);
   if (composed) scenarios.push(composed);
 
   for (const scenario of scenarios) {
     for (const step of scenario.steps) {
-      if (
-        "resolved" in step &&
-        step.resolved?.strategy === "unresolved"
-      ) {
+      if ("resolved" in step && step.resolved?.strategy === "unresolved") {
         notes.push(
           `${scenario.id}: unresolved target "${step.target}" — needs LLM resolution or a clearer phrase in the spec.`
         );

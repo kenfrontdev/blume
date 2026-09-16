@@ -31,6 +31,7 @@ export default async function PortalLayout({
           <Link href={`/p/${projectId}`}>Dashboard</Link>
         </nav>
         <div className="portal-nav-spacer" />
+        <Link href="/login">Sign in</Link>
         <CommandPalette projectId={projectId} />
       </header>
       <main className="portal-main">{children}</main>

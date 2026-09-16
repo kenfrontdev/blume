@@ -5,13 +5,13 @@
   "surfaces": [
     "api"
   ],
-  "compiledAt": "2026-09-16T05:07:49.952Z",
-  "seed": "c0ffee00deadbeef",
+  "compiledAt": "2026-09-16T05:21:20.633Z",
+  "seed": "a485609c6aef6bd3",
   "concreteValues": {
-    "matchId": "match-6080",
-    "userId": "user-78080",
-    "viewerCount": 1,
-    "otherUserId": "user-9424"
+    "matchId": "match-4444",
+    "userId": "user-94444",
+    "viewerCount": 5,
+    "otherUserId": "user--62679"
   },
   "scenarios": [
     {
@@ -24,16 +24,16 @@
           "action": "setup",
           "description": "a live match under capacity",
           "fixture": {
-            "matchId": "match-6080",
-            "userId": "user-78080"
+            "matchId": "match-4444",
+            "userId": "user-94444"
           }
         },
         {
           "action": "http",
           "method": "POST",
-          "path": "/matches/match-6080/join",
+          "path": "/matches/match-4444/join",
           "body": {
-            "userId": "user-78080"
+            "userId": "user-94444"
           }
         },
         {
@@ -60,16 +60,16 @@
           "action": "setup",
           "description": "the match is at max viewers",
           "fixture": {
-            "matchId": "match-6080",
-            "userId": "user-78080"
+            "matchId": "match-4444",
+            "userId": "user-94444"
           }
         },
         {
           "action": "http",
           "method": "POST",
-          "path": "/matches/match-6080/join",
+          "path": "/matches/match-4444/join",
           "body": {
-            "userId": "user-78080"
+            "userId": "user-94444"
           }
         },
         {

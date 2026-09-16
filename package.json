@@ -13,24 +13,31 @@
     "compile": "tsx compiler/cli.ts",
     "compile:selfcheck": "tsx compiler/selfcheck.ts",
     "trust:selfcheck": "tsx lib/trust/selfcheck.ts",
-    "ingest": "tsx scripts/ingest.ts"
+    "swarm:selfcheck": "tsx lib/swarm/selfcheck.ts",
+    "ingest": "tsx scripts/ingest.ts",
+    "score:playwright": "tsx scripts/score-playwright.ts",
+    "mcp": "tsx mcp/server.ts",
+    "selfcheck": "npm run compile:selfcheck && npm run trust:selfcheck && npm run swarm:selfcheck"
   },
   "dependencies": {
-    "next": "^15.0.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "@modelcontextprotocol/sdk": "^1.12.0",
     "@neondatabase/serverless": "^0.10.0",
     "drizzle-orm": "^0.36.0",
-    "yaml": "^2.6.0"
+    "next": "^15.0.0",
+    "next-auth": "^5.0.0-beta.25",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "yaml": "^2.6.0",
+    "zod": "^3.23.0"
   },
   "devDependencies": {
-    "typescript": "^5.6.0",
+    "@playwright/test": "^1.48.0",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "drizzle-kit": "^0.28.0",
     "dotenv": "^16.4.0",
+    "drizzle-kit": "^0.28.0",
     "tsx": "^4.19.0",
-    "@playwright/test": "^1.48.0"
+    "typescript": "^5.6.0"
   }
 }

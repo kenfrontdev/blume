@@ -661,3 +661,84 @@ textarea {
   background: var(--teal-500);
   animation: pulse-dot 1.6s ease infinite;
 }
+
+.login {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+}
+
+.login-panel {
+  width: min(420px, 100%);
+  background: var(--surface-strong);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 4px);
+  box-shadow: var(--shadow);
+  padding: 2rem;
+  animation: fade-up 0.45s ease both;
+}
+
+.login-panel .eyebrow {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: var(--teal-700);
+  margin: 0 0 0.5rem;
+}
+
+.login-panel h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.85rem;
+}
+
+.login-panel .lede {
+  color: var(--ink-muted);
+  margin: 0 0 1.5rem;
+}
+
+.login-panel form {
+  display: grid;
+  gap: 1rem;
+}
+
+.login-panel label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  color: var(--ink-muted);
+}
+
+.login-panel input,
+.login-panel select {
+  font: inherit;
+  color: var(--ink);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  padding: 0.65rem 0.75rem;
+  background: #fff;
+}
+
+.login-panel button {
+  font: inherit;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  background: var(--teal-700);
+  color: #fff;
+  cursor: pointer;
+}
+
+.login-panel button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.form-error {
+  color: var(--danger);
+  margin: 0;
+  font-size: 0.9rem;
+}

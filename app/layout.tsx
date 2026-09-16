@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Syne, Source_Sans_3 } from "next/font/google";
+import { AuthSessionProvider } from "./providers";
 import "./globals.css";
 
 const syne = Syne({
@@ -26,7 +27,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${syne.variable} ${sourceSans.variable}`}>
-      <body>{children}</body>
+      <body>
+        <AuthSessionProvider>{children}</AuthSessionProvider>
+      </body>
     </html>
   );
 }
