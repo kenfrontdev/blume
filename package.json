@@ -1,0 +1,43 @@
+{
+  "name": "corin",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "compile": "tsx compiler/cli.ts",
+    "compile:selfcheck": "tsx compiler/selfcheck.ts",
+    "trust:selfcheck": "tsx lib/trust/selfcheck.ts",
+    "swarm:selfcheck": "tsx lib/swarm/selfcheck.ts",
+    "ingest": "tsx scripts/ingest.ts",
+    "score:playwright": "tsx scripts/score-playwright.ts",
+    "mcp": "tsx mcp/server.ts",
+    "selfcheck": "npm run compile:selfcheck && npm run trust:selfcheck && npm run swarm:selfcheck"
+  },
+  "dependencies": {
+    "@clerk/nextjs": "^7.9.4",
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "@neondatabase/serverless": "^0.10.0",
+    "drizzle-orm": "^0.36.0",
+    "next": "^15.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "yaml": "^2.6.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "dotenv": "^16.4.0",
+    "drizzle-kit": "^0.28.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}

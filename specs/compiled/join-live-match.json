@@ -1,0 +1,276 @@
+{
+  "specId": "join-live-match",
+  "specVersion": 1,
+  "layer": "ui",
+  "surfaces": [
+    "web",
+    "ios"
+  ],
+  "compiledAt": "2026-09-16T05:21:19.217Z",
+  "seed": "abcdef0123456789",
+  "concreteValues": {
+    "matchId": "match-7001",
+    "userId": "user-70001",
+    "viewerCount": 2,
+    "otherUserId": "user-alt-1"
+  },
+  "scenarios": [
+    {
+      "id": "AC-01",
+      "kind": "acceptance",
+      "title": "Spectator joins successfully",
+      "criticality": "critical",
+      "steps": [
+        {
+          "action": "setup",
+          "description": "a live match is in progress; User is authenticated; A live match exists and is joinable"
+        },
+        {
+          "action": "tap",
+          "target": "the user taps \"Join\"",
+          "resolved": {
+            "strategy": "role",
+            "value": "button",
+            "name": "Join",
+            "source": "llm",
+            "inViewportCheck": true
+          }
+        },
+        {
+          "action": "assert",
+          "assert": "elementVisible",
+          "target": "the board renders within 2 seconds",
+          "timeoutMs": 2000,
+          "resolved": {
+            "strategy": "testid",
+            "value": "board",
+            "source": "llm",
+            "inViewportCheck": true
+          }
+        },
+        {
+          "action": "assert",
+          "assert": "elementVisible",
+          "target": "the user is added to the live viewer count",
+          "resolved": {
+            "strategy": "testid",
+            "value": "viewer-count",
+            "source": "heuristic",
+            "inViewportCheck": true
+          }
+        },
+        {
+          "action": "assert",
+          "assert": "elementInViewport",
+          "target": "the user taps \"Join\"",
+          "resolved": {
+            "strategy": "role",
+            "value": "button",
+            "name": "Join",
+            "source": "llm",
+            "inViewportCheck": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "AC-02",
+      "kind": "acceptance",
+      "title": "Match ends while spectating",
+      "criticality": "major",
+      "steps": [
+        {
+          "action": "setup",
+          "description": "the user is spectating a live match; User is authenticated; A live match exists and is joinable"
+        },
+        {
+          "action": "wait",
+          "timeoutMs": 2000,
+          "reason": "the match ends"
+        },
+        {
+          "action": "assert",
+          "assert": "elementVisible",
+          "target": "the user sees a \"Match complete\" state",
+          "resolved": {
+            "strategy": "text",
+            "value": "Match complete",
+            "source": "heuristic",
+            "inViewportCheck": true
+          }
+        },
+        {
+          "action": "assert",
+          "assert": "elementVisible",
+          "target": "is offered a link to the results screen",
+          "resolved": {
+            "strategy": "role",
+            "value": "link",
+            "name": "Results",
+            "source": "heuristic",
+            "inViewportCheck": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "EC-01",
+      "kind": "edge",
+      "title": "Match becomes full mid-join",
+      "ref": "AC-01",
+      "steps": [
+        {
+          "action": "setup",
+          "description": "the match reaches max spectators as the user taps \"Join\"; User is authenticated; A live match exists and is joinable"
+        },
+        {
+          "action": "wait",
+          "timeoutMs": 2000,
+          "reason": "the join request completes"
+        },
+        {
+          "action": "assert",
+          "assert": "elementVisible",
+          "target": "the user sees a \"Match is full\" message",
+          "resolved": {
+            "strategy": "text",
+            "value": "Match is full",
+            "source": "heuristic",
+            "inViewportCheck": true
+          }
+        },
+        {
+          "action": "assert",
+          "assert": "elementVisible",
+          "target": "is offered similar live matches",
+          "resolved": {
+            "strategy": "testid",
+            "value": "similar-matches",
+            "source": "heuristic",
+            "inViewportCheck": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "EC-02",
+      "kind": "edge",
+      "title": "Network drops during join",
+      "ref": "AC-01",
+      "steps": [
+        {
+          "action": "setup",
+          "description": "the user taps \"Join\"; User is authenticated; A live match exists and is joinable"
+        },
+        {
+          "action": "wait",
+          "timeoutMs": 2000,
+          "reason": "the network request times out"
+        },
+        {
+          "action": "assert",
+          "assert": "elementVisible",
+          "target": "the user sees a retry option",
+          "resolved": {
+            "strategy": "role",
+            "value": "button",
+            "name": "Retry",
+            "source": "heuristic",
+            "inViewportCheck": true
+          }
+        },
+        {
+          "action": "assert",
+          "assert": "noPartialState",
+          "target": "no partial join state is left behind"
+        }
+      ]
+    },
+    {
+      "id": "COMPOSED",
+      "kind": "composed",
+      "title": "End-to-end composed journey",
+      "steps": [
+        {
+          "action": "setup",
+          "description": "a live match is in progress; User is authenticated; A live match exists and is joinable"
+        },
+        {
+          "action": "tap",
+          "target": "the user taps \"Join\"",
+          "resolved": {
+            "strategy": "role",
+            "value": "button",
+            "name": "Join",
+            "source": "llm",
+            "inViewportCheck": true
+          }
+        },
+        {
+          "action": "assert",
+          "assert": "elementVisible",
+          "target": "the board renders within 2 seconds",
+          "timeoutMs": 2000,
+          "resolved": {
+            "strategy": "testid",
+            "value": "board",
+            "source": "llm",
+            "inViewportCheck": true
+          }
+        },
+        {
+          "action": "assert",
+          "assert": "elementVisible",
+          "target": "the user is added to the live viewer count",
+          "resolved": {
+            "strategy": "testid",
+            "value": "viewer-count",
+            "source": "heuristic",
+            "inViewportCheck": true
+          }
+        },
+        {
+          "action": "assert",
+          "assert": "elementInViewport",
+          "target": "the user taps \"Join\"",
+          "resolved": {
+            "strategy": "role",
+            "value": "button",
+            "name": "Join",
+            "source": "llm",
+            "inViewportCheck": true
+          }
+        },
+        {
+          "action": "wait",
+          "timeoutMs": 2000,
+          "reason": "the match ends"
+        },
+        {
+          "action": "assert",
+          "assert": "elementVisible",
+          "target": "the user sees a \"Match complete\" state",
+          "resolved": {
+            "strategy": "text",
+            "value": "Match complete",
+            "source": "heuristic",
+            "inViewportCheck": true
+          }
+        },
+        {
+          "action": "assert",
+          "assert": "elementVisible",
+          "target": "is offered a link to the results screen",
+          "resolved": {
+            "strategy": "role",
+            "value": "link",
+            "name": "Results",
+            "source": "heuristic",
+            "inViewportCheck": true
+          }
+        }
+      ]
+    }
+  ],
+  "notes": []
+}

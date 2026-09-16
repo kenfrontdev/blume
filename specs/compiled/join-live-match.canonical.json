@@ -1,0 +1,94 @@
+{
+  "id": "join-live-match",
+  "title": "Join a Live Match",
+  "surfaces": [
+    "web",
+    "ios"
+  ],
+  "layer": "ui",
+  "version": 1,
+  "status": "draft",
+  "source": null,
+  "last_updated": "2026-09-16",
+  "related_specs": [
+    "match-join-endpoint"
+  ],
+  "retry_cap": null,
+  "release_threshold": null,
+  "summary": "A spectator joins a live carrom match in progress and sees the board update in real time.",
+  "preconditions": [
+    "User is authenticated",
+    "A live match exists and is joinable"
+  ],
+  "acceptance_criteria": [
+    {
+      "id": "AC-01",
+      "title": "Spectator joins successfully",
+      "criticality": "critical",
+      "status": "active",
+      "given": "a live match is in progress",
+      "when": "the user taps \"Join\"",
+      "then": [
+        "the board renders within 2 seconds",
+        "the user is added to the live viewer count"
+      ]
+    },
+    {
+      "id": "AC-02",
+      "title": "Match ends while spectating",
+      "criticality": "major",
+      "status": "active",
+      "given": "the user is spectating a live match",
+      "when": "the match ends",
+      "then": [
+        "the user sees a \"Match complete\" state",
+        "is offered a link to the results screen"
+      ]
+    }
+  ],
+  "edge_cases": [
+    {
+      "id": "EC-01",
+      "ref": "AC-01",
+      "title": "Match becomes full mid-join",
+      "given": "the match reaches max spectators as the user taps \"Join\"",
+      "when": "the join request completes",
+      "then": [
+        "the user sees a \"Match is full\" message",
+        "is offered similar live matches"
+      ]
+    },
+    {
+      "id": "EC-02",
+      "ref": "AC-01",
+      "title": "Network drops during join",
+      "given": "the user taps \"Join\"",
+      "when": "the network request times out",
+      "then": [
+        "the user sees a retry option",
+        "no partial join state is left behind"
+      ]
+    }
+  ],
+  "trailing": {
+    "type": "ui_states",
+    "surfaces": {
+      "web": {
+        "loading": "skeleton board placeholder, max 2s",
+        "empty": "\"No live matches right now\" with a refresh action",
+        "error": "inline banner, non-blocking, retry button",
+        "success": "full board renders, live viewer count visible"
+      },
+      "ios": {
+        "loading": "native spinner over dimmed board",
+        "empty": "same copy as web, platform-native empty-state illustration",
+        "error": "toast, auto-dismiss after 4s",
+        "success": "same as web"
+      }
+    }
+  },
+  "out_of_scope": [
+    "Spectator chat (tracked separately)",
+    "Replay/rewind of an already-joined match"
+  ]
+}
