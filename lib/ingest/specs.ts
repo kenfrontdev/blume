@@ -70,7 +70,7 @@ export const ingestSpecs = async (options?: {
         preconditions: spec.preconditions,
         acceptanceCriteria: spec.acceptance_criteria,
         edgeCases: spec.edge_cases,
-        trailing: spec.trailing as Record<string, unknown>,
+        trailing: spec.trailing as unknown as Record<string, unknown>,
         outOfScope: spec.out_of_scope,
         lastUpdated: Number.isNaN(lastUpdated.getTime())
           ? new Date()
@@ -96,7 +96,7 @@ export const ingestSpecs = async (options?: {
           preconditions: spec.preconditions,
           acceptanceCriteria: spec.acceptance_criteria,
           edgeCases: spec.edge_cases,
-          trailing: spec.trailing as Record<string, unknown>,
+          trailing: spec.trailing as unknown as Record<string, unknown>,
           outOfScope: spec.out_of_scope,
           lastUpdated: Number.isNaN(lastUpdated.getTime())
             ? new Date()
