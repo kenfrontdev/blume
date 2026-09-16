@@ -1,0 +1,77 @@
+{
+  "id": "match-join-endpoint",
+  "title": "Match Join Endpoint",
+  "surfaces": [
+    "api"
+  ],
+  "layer": "api",
+  "version": 1,
+  "status": "draft",
+  "source": null,
+  "last_updated": "2026-09-16",
+  "related_specs": [
+    "join-live-match"
+  ],
+  "retry_cap": null,
+  "release_threshold": null,
+  "summary": "Backend endpoint that adds a user to a live match's viewer list and returns current board state.",
+  "preconditions": [
+    "User is authenticated",
+    "Match exists"
+  ],
+  "acceptance_criteria": [
+    {
+      "id": "AC-01",
+      "title": "Successful join",
+      "criticality": "critical",
+      "status": "active",
+      "given": "a live match under capacity",
+      "when": "a join request is received",
+      "then": [
+        "the response is 200 with board state and viewer count",
+        "the viewer count increments by 1"
+      ]
+    }
+  ],
+  "edge_cases": [
+    {
+      "id": "EC-01",
+      "ref": "AC-01",
+      "title": "Match at capacity",
+      "given": "the match is at max viewers",
+      "when": "a join request is received",
+      "then": [
+        "the response is 409",
+        "viewer count does not increment"
+      ]
+    }
+  ],
+  "trailing": {
+    "type": "interface_contract",
+    "method": "POST",
+    "path": "/matches/{id}/join",
+    "request": {
+      "userId": "<userId>"
+    },
+    "responses": [
+      {
+        "status": 200,
+        "description": "{ boardState, viewerCount }",
+        "body": "{ boardState, viewerCount }"
+      },
+      {
+        "status": 409,
+        "description": "match full",
+        "body": "match full"
+      },
+      {
+        "status": 401,
+        "description": "not authenticated",
+        "body": "not authenticated"
+      }
+    ]
+  },
+  "out_of_scope": [
+    "Rate limiting (tracked separately)"
+  ]
+}

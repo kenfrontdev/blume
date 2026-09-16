@@ -1,0 +1,90 @@
+{
+  "specId": "match-join-endpoint",
+  "specVersion": 1,
+  "layer": "api",
+  "surfaces": [
+    "api"
+  ],
+  "compiledAt": "2026-09-16T04:55:07.009Z",
+  "seed": "c0ffee00deadbeef",
+  "concreteValues": {
+    "matchId": "match-6080",
+    "userId": "user-78080",
+    "viewerCount": 1,
+    "otherUserId": "user-9424"
+  },
+  "scenarios": [
+    {
+      "id": "AC-01",
+      "kind": "acceptance",
+      "title": "Successful join",
+      "criticality": "critical",
+      "steps": [
+        {
+          "action": "setup",
+          "description": "a live match under capacity",
+          "fixture": {
+            "matchId": "match-6080",
+            "userId": "user-78080"
+          }
+        },
+        {
+          "action": "http",
+          "method": "POST",
+          "path": "/matches/match-6080/join",
+          "body": {
+            "userId": "user-78080"
+          }
+        },
+        {
+          "action": "assert",
+          "assert": "httpStatus",
+          "target": "the response is 200 with board state and viewer count",
+          "expected": 200
+        },
+        {
+          "action": "assert",
+          "assert": "httpBody",
+          "target": "the viewer count increments by 1",
+          "expected": "the viewer count increments by 1"
+        }
+      ]
+    },
+    {
+      "id": "EC-01",
+      "kind": "edge",
+      "title": "Match at capacity",
+      "ref": "AC-01",
+      "steps": [
+        {
+          "action": "setup",
+          "description": "the match is at max viewers",
+          "fixture": {
+            "matchId": "match-6080",
+            "userId": "user-78080"
+          }
+        },
+        {
+          "action": "http",
+          "method": "POST",
+          "path": "/matches/match-6080/join",
+          "body": {
+            "userId": "user-78080"
+          }
+        },
+        {
+          "action": "assert",
+          "assert": "httpStatus",
+          "target": "the response is 409",
+          "expected": 409
+        },
+        {
+          "action": "assert",
+          "assert": "noPartialState",
+          "target": "viewer count does not increment"
+        }
+      ]
+    }
+  ],
+  "notes": []
+}
