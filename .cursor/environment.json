@@ -1,0 +1,12 @@
+{
+  "name": "Blume",
+  "install": "bash .cursor/install.sh",
+  "start": "bash .cursor/start.sh",
+  "terminals": [
+    {
+      "name": "web",
+      "command": "NODE_PATH=$HOME/.blume-dev/node_modules BLUME_LOCAL_NEON=1 NODE_OPTIONS=\"--import ./scripts/dev/neon-local-preload.mjs\" npm run dev"
+    }
+  ],
+  "ports": [3000]
+}
