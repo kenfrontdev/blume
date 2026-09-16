@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CommandPalette } from "./components/CommandPalette";
 import { ProjectSwitcher } from "./components/ProjectSwitcher";
+import { AuthControls } from "@/app/components/AuthControls";
 import { listProjects, type ProjectRow } from "@/lib/portal/queries";
 
 interface PortalLayoutProps {
@@ -31,7 +32,7 @@ export default async function PortalLayout({
           <Link href={`/p/${projectId}`}>Dashboard</Link>
         </nav>
         <div className="portal-nav-spacer" />
-        <Link href="/login">Sign in</Link>
+        <AuthControls />
         <CommandPalette projectId={projectId} />
       </header>
       <main className="portal-main">{children}</main>

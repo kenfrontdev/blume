@@ -58,11 +58,17 @@ CORIN_MCP_ROLE=coding npm run mcp          # or ideation
 
 | Route | Purpose |
 | --- | --- |
-| `/login` | Auth.js sign-in (quality_owner / contributor) |
 | `/p/[projectId]` | Release dashboard |
 | `/p/[projectId]/builds/[buildId]` | Timeline + root-cause chat + gate actions |
 | `/p/[projectId]/specs/[specId]` | Spec view + live confidence ceiling |
 | Cmd+K | Command palette |
+
+**Auth (Clerk):** Sign in / Sign up / UserButton live in the portal nav.
+Identity comes from Clerk; Corin roles stay in `project_roles` (§11).
+Set `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` in `.env.local`.
+
+After ingesting specs (`npm run ingest`), open the app (`npm run dev`) and
+go to `/` — it redirects to `/p/carromlive`.
 
 ## Env
 

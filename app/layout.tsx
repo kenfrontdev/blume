@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
+import { ClerkProvider } from "@clerk/nextjs";
 import { Syne, Source_Sans_3 } from "next/font/google";
-import { AuthSessionProvider } from "./providers";
 import "./globals.css";
 
 const syne = Syne({
@@ -28,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${syne.variable} ${sourceSans.variable}`}>
       <body>
-        <AuthSessionProvider>{children}</AuthSessionProvider>
+        <ClerkProvider>{children}</ClerkProvider>
       </body>
     </html>
   );

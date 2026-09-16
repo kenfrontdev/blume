@@ -20,7 +20,7 @@ export async function POST(
   context: { params: Promise<{ buildId: string }> }
 ) {
   const session = await auth();
-  if (!session?.user?.id) {
+  if (!session.userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -83,7 +83,7 @@ export async function POST(
       .limit(1);
     const projectId = specRows[0]?.projectId ?? "carromlive";
 
-    const isOwner = await requireQualityOwner(session.user.id, projectId);
+    const isOwner = await requireQualityOwner(session.userId, projectId);
     if (!isOwner && action === "override") {
       return NextResponse.json(
         { error: "Only quality owners may override the gate (§11)." },
@@ -99,7 +99,7 @@ export async function POST(
       buildId,
       decision,
       overrideReason,
-      decidedBy: body.decided_by ?? session.user.id,
+      decidedBy: body.decided_by ?? session.userId,
     });
 
     await db
