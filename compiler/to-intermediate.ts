@@ -277,7 +277,7 @@ export const toIntermediate = async (
     typeof options?.resolver !== "function"
   ) {
     notes.push(
-      "UI targets resolved heuristically. Pass resolver:'llm' (CORIN_COMPILER_LLM_*) for §4 accessibility-tree resolution."
+      "UI targets resolved heuristically. Pass resolver:'llm' (BLUME_COMPILER_LLM_*) for §4 accessibility-tree resolution."
     );
   }
 

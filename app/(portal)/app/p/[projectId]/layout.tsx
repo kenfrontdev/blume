@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { CommandPalette } from "./components/CommandPalette";
 import { ProjectSwitcher } from "./components/ProjectSwitcher";
-import { AuthControls } from "@/app/components/AuthControls";
+import { AuthControls } from "../../components/AuthControls";
 import { listProjects, type ProjectRow } from "@/lib/portal/queries";
 
 interface PortalLayoutProps {
@@ -19,23 +19,28 @@ export default async function PortalLayout({
     "empty" in listed && listed.empty ? [] : (listed as ProjectRow[]);
 
   return (
-    <div className="portal-shell">
-      <header className="portal-nav">
-        <Link href={`/p/${projectId}`} className="portal-brand">
-          Corin<span>.</span>
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
+      <header className="flex h-14 items-center gap-4 border-b border-border px-6">
+        <Link
+          href={`/p/${projectId}`}
+          className="font-mono text-sm font-semibold tracking-tight text-foreground no-underline"
+        >
+          BLUME
         </Link>
         <ProjectSwitcher projectId={projectId} projects={projects} />
-        <nav
-          aria-label="Portal"
-          style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}
-        >
-          <Link href={`/p/${projectId}`}>Dashboard</Link>
+        <nav aria-label="Portal" className="flex items-center gap-3 text-sm">
+          <Link
+            href={`/p/${projectId}`}
+            className="text-muted-foreground no-underline hover:text-foreground"
+          >
+            Dashboard
+          </Link>
         </nav>
-        <div className="portal-nav-spacer" />
+        <div className="flex-1" />
         <AuthControls />
         <CommandPalette projectId={projectId} />
       </header>
-      <main className="portal-main">{children}</main>
+      <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-8">{children}</main>
     </div>
   );
 }

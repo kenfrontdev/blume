@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 /**
- * Corin marketing landing page.
+ * Blume marketing landing page.
  *
  * Drop this in at app/(marketing)/page.tsx (or wherever the root route
  * should live once the app/portal moves to a subdomain). Self-contained —
@@ -28,7 +28,7 @@ export default function LandingPage() {
   return (
     <div className="page">
       <header className="masthead">
-        <div className="masthead-mark">CORIN</div>
+        <div className="masthead-mark">BLUME</div>
         <nav className="masthead-nav">
           <a href="#how-it-works">How it works</a>
           <a href="#access">Request access</a>
@@ -47,7 +47,7 @@ export default function LandingPage() {
               The spec is.
             </h1>
             <p className="hero-sub">
-              Corin turns a product spec into the only contract that
+              Blume turns a product spec into the only contract that
               matters — the thing your AI coding agent builds against, and
               the thing an independent test suite checks it against. The
               suite never reads the code. It can&apos;t inherit the same
@@ -129,7 +129,7 @@ export default function LandingPage() {
               <div>
                 <h3>Write the spec, not the ticket</h3>
                 <p>
-                  Ideate normally, in conversation. Corin extracts
+                  Ideate normally, in conversation. Blume extracts
                   acceptance criteria, edge cases, and criticality —
                   and tells you plainly what&apos;s still too thin to test.
                 </p>
@@ -175,7 +175,7 @@ export default function LandingPage() {
         <section id="access" className="access">
           <h2>Request access</h2>
           <p>
-            Corin is in active use on our own products right now. We&apos;re
+            Blume is in active use on our own products right now. We&apos;re
             opening it up in small batches.
           </p>
           {submitted ? (
@@ -198,8 +198,8 @@ export default function LandingPage() {
       </main>
 
       <footer className="foot">
-        <span>Corin</span>
-        <span>getcorin.ai</span>
+        <span>Blume</span>
+        <span>getblume.ai</span>
       </footer>
 
       <style jsx>{`

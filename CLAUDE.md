@@ -1,6 +1,6 @@
-# Build agent rules (Corin — §3, §12)
+# Build agent rules (Blume — §3, §12)
 
-You are building inside Corin, a spec-driven development management
+You are building inside Blume, a spec-driven development management
 platform. These rules are not suggestions — they encode structural
 guarantees the rest of the system depends on. Follow them exactly.
 

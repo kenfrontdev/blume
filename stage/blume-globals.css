@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    /* Corin design tokens — see corin-design-language.md for rationale */
+    /* Blume design tokens — see blume-design-language.md for rationale */
     --background: 100 8% 95%;      /* #F2F3F1 */
     --foreground: 215 22% 10%;     /* #14181F */
 
@@ -43,7 +43,7 @@
     --radius: 0.1875rem; /* 3px — sharp, document-style; see design language doc */
   }
 
-  /* Dark mode intentionally not designed yet — Corin's document metaphor
+  /* Dark mode intentionally not designed yet — Blume's document metaphor
      reads as a light-paper aesthetic. Revisit if/when the app portal
      needs a dark surface for the build-timeline/editor views. */
 

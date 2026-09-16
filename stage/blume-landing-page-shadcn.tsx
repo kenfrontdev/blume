@@ -6,14 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 
 /**
- * Corin marketing landing page — shadcn/Tailwind version.
+ * Blume marketing landing page — shadcn/Tailwind version.
  *
  * Requires: npx shadcn@latest add button input badge
- * Requires the tokens from corin-globals.css / corin-tailwind.config.ts
- * to already be wired into the project (see corin-design-language.md).
+ * Requires the tokens from blume-globals.css / blume-tailwind.config.ts
+ * to already be wired into the project (see blume-design-language.md).
  *
  * Drop at app/(marketing)/page.tsx, or app/page.tsx if the portal lives
- * on a subdomain (app.getcorin.ai) via middleware host-based rewrite.
+ * on a subdomain (app.getblume.ai) via middleware host-based rewrite.
  */
 
 export default function LandingPage() {
@@ -31,7 +31,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-background text-foreground font-sans">
       {/* Masthead */}
       <header className="flex items-center justify-between border-b border-border px-10 py-6">
-        <span className="font-mono font-semibold tracking-tight">CORIN</span>
+        <span className="font-mono font-semibold tracking-tight">BLUME</span>
         <nav className="flex gap-8 text-sm text-muted-foreground">
           <a href="#how-it-works" className="hover:text-foreground">
             How it works
@@ -54,7 +54,7 @@ export default function LandingPage() {
               The spec is.
             </h1>
             <p className="mb-8 max-w-[46ch] text-lg leading-relaxed text-muted-foreground">
-              Corin turns a product spec into the only contract that
+              Blume turns a product spec into the only contract that
               matters — the thing your AI coding agent builds against, and
               the thing an independent test suite checks it against. The
               suite never reads the code. It can&apos;t inherit the same
@@ -112,7 +112,7 @@ export default function LandingPage() {
             <FlowStep
               n="01"
               title="Write the spec, not the ticket"
-              body="Ideate normally, in conversation. Corin extracts acceptance criteria, edge cases, and criticality — and tells you plainly what's still too thin to test."
+              body="Ideate normally, in conversation. Blume extracts acceptance criteria, edge cases, and criticality — and tells you plainly what's still too thin to test."
             />
             <FlowStep
               n="02"
@@ -136,7 +136,7 @@ export default function LandingPage() {
         <section id="access" className="mx-auto max-w-[640px] border-t border-border px-10 py-20">
           <h2 className="mb-3 text-xl font-semibold">Request access</h2>
           <p className="mb-7 text-muted-foreground">
-            Corin is in active use on our own products right now. We&apos;re
+            Blume is in active use on our own products right now. We&apos;re
             opening it up in small batches.
           </p>
           {submitted ? (
@@ -160,8 +160,8 @@ export default function LandingPage() {
       </main>
 
       <footer className="flex justify-between border-t border-border px-10 py-8 font-mono text-sm text-muted-foreground">
-        <span>Corin</span>
-        <span>getcorin.ai</span>
+        <span>Blume</span>
+        <span>getblume.ai</span>
       </footer>
     </div>
   );

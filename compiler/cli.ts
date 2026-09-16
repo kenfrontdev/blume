@@ -1,6 +1,6 @@
 #!/usr/bin/env npx tsx
 /**
- * Corin compiler CLI (§4).
+ * Blume compiler CLI (§4).
  *
  *   npm run compile -- <spec-id> [--seed <hex>] [--ir-only] [--llm]
  */

@@ -22,7 +22,7 @@ const flatten = (node: A11yNode, out: A11yNode[] = []): A11yNode[] => {
 
 /**
  * Match a phrase against an accessibility tree without an LLM.
- * Used when CORIN_COMPILER_LLM_API_KEY is unset, and as a fallback.
+ * Used when BLUME_COMPILER_LLM_API_KEY is unset, and as a fallback.
  */
 export const resolveAgainstA11yTree = (
   phrase: string,
@@ -63,18 +63,18 @@ export const resolveAgainstA11yTree = (
 
 /**
  * §4 LLM-assisted resolution. Uses a *different* provider than the build
- * agent (CORIN_COMPILER_LLM_*). Falls back to a11y-tree matching, then
+ * agent (BLUME_COMPILER_LLM_*). Falls back to a11y-tree matching, then
  * heuristics, so compile still works without a key.
  */
 export const resolveUiTargetLlm = async (
   phrase: string,
   context?: { a11yTree?: A11yNode | null }
 ): Promise<ResolvedTarget> => {
-  const apiKey = process.env.CORIN_COMPILER_LLM_API_KEY;
+  const apiKey = process.env.BLUME_COMPILER_LLM_API_KEY;
   const baseUrl =
-    process.env.CORIN_COMPILER_LLM_BASE_URL ?? "https://api.openai.com/v1";
+    process.env.BLUME_COMPILER_LLM_BASE_URL ?? "https://api.openai.com/v1";
   const model =
-    process.env.CORIN_COMPILER_LLM_MODEL ?? "gpt-4o-mini";
+    process.env.BLUME_COMPILER_LLM_MODEL ?? "gpt-4o-mini";
 
   if (context?.a11yTree) {
     const fromTree = resolveAgainstA11yTree(phrase, context.a11yTree);

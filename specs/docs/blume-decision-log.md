@@ -1,7 +1,7 @@
-# Corin — Decision Log
+# Blume — Decision Log
 
 **What this is:** a running record of every architectural decision made
-for Corin (getcorin.ai) — a spec-driven, test-first **development
+for Blume (getblume.ai) — a spec-driven, test-first **development
 management platform**, in the order the flow executes. The spec is the
 durable artifact; build and test are both downstream consumers of it,
 and the system governs the full path from idea to shipped feature and

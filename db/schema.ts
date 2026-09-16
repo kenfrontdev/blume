@@ -11,7 +11,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 /**
- * Corin database schema.
+ * Blume database schema.
  *
  * Maps directly onto the decision log's data model — see the section
  * references in each table's comment. This is the source of truth for

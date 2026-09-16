@@ -24,7 +24,7 @@ const assume = (assumeIdx >= 0 ? args[assumeIdx + 1] : "pass") as
   | "fail";
 const shouldRecord = args.includes("--record");
 
-const projectId = process.env.CORIN_DEFAULT_PROJECT_SLUG ?? "carromlive";
+const projectId = process.env.BLUME_DEFAULT_PROJECT_SLUG ?? "carromlive";
 
 const main = async () => {
   const { upserted } = await ingestSpecs({ projectId });

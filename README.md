@@ -1,11 +1,11 @@
-# Corin
+# Blume
 
 Spec-driven, test-first development management platform.
 
 ## What's here
 
 ```
-corin/
+blume/
 ├── CLAUDE.md                 ← build-agent rules (§3, §12)
 ├── auth.ts                   ← Auth.js + per-project roles (§11)
 ├── mcp/server.ts             ← ideation + coding-agent MCP (§1 / §12)
@@ -37,7 +37,7 @@ npm run selfcheck                          # compiler + trust + swarm
 npm run compile -- match-join-endpoint
 npm run compile -- join-live-match --llm --a11y tree.json
 npm run score:playwright -- match-join-endpoint --assume pass --record
-CORIN_MCP_ROLE=coding npm run mcp          # or ideation
+BLUME_MCP_ROLE=coding npm run mcp          # or ideation
 ```
 
 ## Pipeline coverage
@@ -45,7 +45,7 @@ CORIN_MCP_ROLE=coding npm run mcp          # or ideation
 | Stage | Status |
 | --- | --- |
 | §4 Compiler (MD → IR → Playwright/Maestro) | Done |
-| §4 LLM / a11y target resolution | Done (`--llm`, `CORIN_COMPILER_LLM_*`, a11y tree fallback) |
+| §4 LLM / a11y target resolution | Done (`--llm`, `BLUME_COMPILER_LLM_*`, a11y tree fallback) |
 | §0 Trust score + §7 release gate | Done |
 | Playwright JSON → trust score | Done (`score:playwright`) |
 | §6 Swarm orchestration + notes | Done |
@@ -64,7 +64,7 @@ CORIN_MCP_ROLE=coding npm run mcp          # or ideation
 | Cmd+K | Command palette |
 
 **Auth (Clerk):** Sign in / Sign up / UserButton live in the portal nav.
-Identity comes from Clerk; Corin roles stay in `project_roles` (§11).
+Identity comes from Clerk; Blume roles stay in `project_roles` (§11).
 Set `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` in `.env.local`.
 
 After ingesting specs (`npm run ingest`), open the app (`npm run dev`) and
@@ -73,6 +73,6 @@ go to `/` — it redirects to `/p/carromlive`.
 ## Env
 
 See `.env.example` for `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `AUTH_SECRET`,
-`CORIN_COMPILER_LLM_*`, and optional GitHub OAuth keys.
+`BLUME_COMPILER_LLM_*`, and optional GitHub OAuth keys.
 
 `.env` is gitignored — never commit credentials.

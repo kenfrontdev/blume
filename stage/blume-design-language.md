@@ -1,7 +1,7 @@
-# Corin — Design Language
+# Blume — Design Language
 
 The visual identity is a **verification document**, not a generic SaaS
-surface. Every design decision below ties back to what Corin actually
+surface. Every design decision below ties back to what Blume actually
 does: specs are documents, tests produce a signed-off record, builds
 carry an audit trail. Nothing decorative — the aesthetic *is* the
 product's mental model.
@@ -49,7 +49,7 @@ signal that something is a *document heading* vs. *reading text*.
 - **Display / headings — `IBM Plex Mono`.** Monospace as a headline
   face is the one deliberately bold choice here, and it's grounded in
   the subject: specs are literally text files, builds produce logs,
-  everything Corin touches is monospaced somewhere in its life. Set
+  everything Blume touches is monospaced somewhere in its life. Set
   large, tight line-height, no letter-spacing tricks.
 - **Body — `IBM Plex Sans`.** Plain, legible, no personality of its
   own — it should disappear into the reading experience.
