@@ -35,6 +35,19 @@ const isInternalPrefixed = (pathname: string) =>
 const isPortalPath = (pathname: string) =>
   pathname === "/app" || pathname.startsWith("/app/");
 
+const normalizePortalPath = (pathname: string) => {
+  if (pathname === "/app") return "/";
+  if (pathname.startsWith("/app/")) return pathname.slice(4);
+  return pathname;
+};
+
+const isPublicPortalPath = (pathname: string) => {
+  const normalized = normalizePortalPath(pathname);
+  return (
+    normalized.startsWith("/sign-in") || normalized.startsWith("/sign-up")
+  );
+};
+
 const resolveSurface = (request: NextRequest): Surface => {
   if (process.env.NODE_ENV === "development") {
     const queryHost = request.nextUrl.searchParams.get("__host");
@@ -92,29 +105,32 @@ const rewriteForSurface = (request: NextRequest) => {
 };
 
 /**
- * Hostname-based surface split:
- * - getblume.ai / www → (marketing) via /web/*
- * - app.getblume.ai → (portal) via /app/*
- *
- * Locally, use ?__host=app|web (sets a blume-host cookie).
- * Clerk runs only for the portal surface when keys are configured.
+ * Hostname-based surface split + portal auth gate:
+ * - getblume.ai → /web/* (public)
+ * - app.getblume.ai → /app/* (requires Clerk sign-in except /sign-in, /sign-up)
  */
 const clerkHandler = hasClerkKeys()
-  ? clerkMiddleware((_auth, request) => rewriteForSurface(request))
+  ? clerkMiddleware(async (auth, request) => {
+      const surface = resolveSurface(request);
+      const { pathname } = request.nextUrl;
+      const onPortal =
+        surface === "portal" ||
+        isPortalPath(pathname) ||
+        pathname.startsWith("/__clerk");
+
+      if (onPortal && !isAssetPath(pathname) && !isPublicPortalPath(pathname)) {
+        await auth.protect();
+      }
+
+      return rewriteForSurface(request);
+    })
   : null;
 
 export default function middleware(
   request: NextRequest,
   event: NextFetchEvent,
 ) {
-  const { pathname } = request.nextUrl;
-  const surface = resolveSurface(request);
-  const portalRequest =
-    surface === "portal" ||
-    isPortalPath(pathname) ||
-    pathname.startsWith("/__clerk");
-
-  if (clerkHandler && portalRequest) {
+  if (clerkHandler) {
     return clerkHandler(request, event);
   }
 

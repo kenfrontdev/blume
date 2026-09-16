@@ -1,22 +1,11 @@
-import { ClerkProvider } from "@clerk/nextjs";
-
-const hasClerkKeys = () => {
-  const pk = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-  return Boolean(pk && pk.startsWith("pk_") && !pk.includes("placeholder"));
-};
-
 /**
- * Clerk only wraps the authenticated product surface when keys are set.
- * Marketing stays public; portal can still render without auth in local/dev.
+ * Portal route-group layout. ClerkProvider lives in the root layout so
+ * SignIn / useSession always have a provider on every host.
  */
 export default function PortalGroupLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  if (!hasClerkKeys()) {
-    return children;
-  }
-
-  return <ClerkProvider>{children}</ClerkProvider>;
+  return children;
 }
