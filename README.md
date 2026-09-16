@@ -75,4 +75,4 @@ go to `/` — it redirects to `/p/carromlive`.
 See `.env.example` for `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `AUTH_SECRET`,
 `BLUME_COMPILER_LLM_*`, and optional GitHub OAuth keys.
 
-`.env` is gitignored — never commit credentials.
+`.env` is gitignored — never commit credentials..
