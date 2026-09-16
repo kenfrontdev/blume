@@ -2,10 +2,14 @@ import { SignUp } from "@clerk/nextjs";
 
 export default function SignUpPage() {
   return (
-    <main className="login">
-      <div className="login-panel" style={{ width: "auto", background: "transparent", border: "none", boxShadow: "none", padding: 0 }}>
-        <SignUp routing="path" path="/sign-up" signInUrl="/sign-in" />
+    <main className="flex min-h-screen flex-col items-center justify-center bg-background px-6 py-16 text-foreground">
+      <div className="mb-10 text-center">
+        <p className="font-mono text-sm font-semibold tracking-tight">BLUME</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Create a portal account
+        </p>
       </div>
+      <SignUp routing="path" path="/sign-up" signInUrl="/sign-in" />
     </main>
   );
 }
