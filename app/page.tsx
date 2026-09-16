@@ -1,16 +1,11 @@
+import { redirect } from "next/navigation";
+
 /**
- * Placeholder landing page.
- *
- * This is where §10's "session list = release dashboard" view will live —
- * every spec/build across all projects, status badges, command palette.
- * Stubbed for now; wire up `db` from "@/lib/db" once the first spec exists.
+ * Landing → project release dashboard (§10).
+ * Auth can gate this later; for now go straight to the default project.
  */
 export default function Home() {
-  return (
-    <main style={{ padding: "2rem", fontFamily: "sans-serif" }}>
-      <h1>Corin</h1>
-      <p>Spec-driven development management platform.</p>
-      <p>Dashboard, spec editor, and build timeline go here — see §10.</p>
-    </main>
-  );
+  const project =
+    process.env.CORIN_DEFAULT_PROJECT_SLUG?.trim() || "carromlive";
+  redirect(`/p/${project}`);
 }

@@ -23,8 +23,11 @@ corin/
 │   │   └── match-join-endpoint.md    ← sample api spec (deterministic compile path)
 │   └── compiled/                 ← compiler output (intermediate + canonical JSON)
 ├── tests/                        ← generated Playwright / Maestro (do not hand-edit)
-├── app/                          ← Next.js app router (placeholder pages for now)
-└── lib/db.ts                     ← Neon/Drizzle client
+├── app/                          ← Next.js App Router portal (§10)
+│   └── p/[projectId]/            ← release dashboard, build timeline, spec view
+└── lib/
+    ├── db.ts                     ← Neon/Drizzle client
+    └── portal/                   ← portal queries, chat grounding, status helpers
 ```
 
 ## Setup
@@ -100,9 +103,25 @@ compiler slice, and trust-score / release-gate wiring. Still downstream:
 - LLM UI-target resolution against a live a11y tree (§4)
 - The MCP server for ideation + coding-agent tool exposure, §1 / §12
 - The swarm orchestration layer, §6
-- The actual portal UI (dashboard, build timeline, root-cause chat), §10
 - Auth provider integration, §11
 - Live Playwright run → trust score (today `--assume pass|fail` stands in)
+
+## Portal (§10)
+
+After ingesting specs (`npm run ingest`), open the app (`npm run dev`) and
+go to `/` — it redirects to `/p/carromlive` (or `CORIN_DEFAULT_PROJECT_SLUG`).
+
+| Route | Purpose |
+| --- | --- |
+| `/p/[projectId]` | Release dashboard — specs clustered by `related_specs`, filterable status badges |
+| `/p/[projectId]/builds/[buildId]` | Unified timeline + root-cause chat + inline gate approve/override |
+| `/p/[projectId]/specs/[specId]` | Spec markdown view with live completeness / confidence ceiling |
+| Cmd+K | Command palette (project-scoped search via `/api/search`) |
+
+Gate overrides POST structured `override_reason` values from §7. Chat answers
+are grounded only in the build record (`trust_trace`, swarm notes, retries,
+drift, gate decisions) — no invented claims. If `DATABASE_URL` is missing,
+pages show an empty state instead of crashing.
 
 ## Trust score & release gate (§0 / §7)
 
