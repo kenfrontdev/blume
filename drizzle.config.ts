@@ -1,13 +1,12 @@
 import { defineConfig } from "drizzle-kit";
 import "dotenv/config";
+import { getDatabaseUrlUnpooled } from "./lib/db-env";
 
-// Prefer the direct (unpooled) URL for migrations; fall back to the pooled app URL.
-const migrationUrl =
-  process.env.DATABASE_URL_UNPOOLED ?? process.env.DATABASE_URL;
+const migrationUrl = getDatabaseUrlUnpooled();
 
 if (!migrationUrl) {
   throw new Error(
-    "DATABASE_URL (or DATABASE_URL_UNPOOLED) is not set. Copy .env.example to .env."
+    "Database URL is not set. Set BLUMEDB_DATABASE_URL_UNPOOLED / BLUMEDB_DATABASE_URL (or DATABASE_URL*). See .env.example."
   );
 }
 

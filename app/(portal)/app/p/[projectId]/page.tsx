@@ -26,7 +26,8 @@ export default async function ProjectDashboardPage({
         {data.reason === "no_database" && (
           <p style={{ marginTop: "1rem" }}>
             Copy <code>.env.example</code> to <code>.env</code>, set{" "}
-            <code>DATABASE_URL</code>, then run <code>npm run ingest</code>.
+            <code>BLUMEDB_DATABASE_URL</code>, then run{" "}
+            <code>npm run ingest</code>.
           </p>
         )}
       </div>

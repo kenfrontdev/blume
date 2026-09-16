@@ -93,7 +93,7 @@ const NO_DB: PortalEmpty = {
   empty: true,
   reason: "no_database",
   message:
-    "Database is not configured. Set DATABASE_URL in .env to load live portal data.",
+    "Database is not configured. Set BLUMEDB_DATABASE_URL (or DATABASE_URL) to load live portal data.",
 };
 
 const asEmpty = (reason: PortalEmpty["reason"], message: string): PortalEmpty => ({
