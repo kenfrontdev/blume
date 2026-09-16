@@ -22,7 +22,7 @@ export async function POST(
   const db = getDb();
   if (!db) {
     return NextResponse.json(
-      { error: "DATABASE_URL is not configured." },
+      { error: "Database URL is not configured (BLUMEDB_DATABASE_URL)." },
       { status: 503 }
     );
   }

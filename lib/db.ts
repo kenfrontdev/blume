@@ -1,20 +1,20 @@
 import { neon } from "@neondatabase/serverless";
 import { drizzle, type NeonHttpDatabase } from "drizzle-orm/neon-http";
 import * as schema from "@/db/schema";
+import { getDatabaseUrl, hasDatabaseUrl } from "@/lib/db-env";
 
 export type AppDb = NeonHttpDatabase<typeof schema>;
 
-export const hasDatabaseUrl = (): boolean =>
-  Boolean(process.env.DATABASE_URL?.trim());
+export { hasDatabaseUrl, getDatabaseUrl } from "@/lib/db-env";
 
 let cached: AppDb | undefined;
 
 /**
- * Lazy Neon client. Returns null when DATABASE_URL is unset so portal
+ * Lazy Neon client. Returns null when no database URL is set so portal
  * pages can render an empty state instead of crashing on import.
  */
 export const getDb = (): AppDb | null => {
-  const url = process.env.DATABASE_URL?.trim();
+  const url = getDatabaseUrl();
   if (!url) return null;
   if (!cached) {
     cached = drizzle(neon(url), { schema });
@@ -23,7 +23,7 @@ export const getDb = (): AppDb | null => {
 };
 
 /**
- * Script/CLI accessor — throws when DATABASE_URL is missing.
+ * Script/CLI accessor — throws when the database URL is missing.
  * Prefer `getDb()` in portal server components and API routes.
  */
 export const db: AppDb = new Proxy({} as AppDb, {
@@ -31,7 +31,7 @@ export const db: AppDb = new Proxy({} as AppDb, {
     const instance = getDb();
     if (!instance) {
       throw new Error(
-        "DATABASE_URL is not set. Copy .env.example to .env and fill it in."
+        "Database URL is not set. Set BLUMEDB_DATABASE_URL (Vercel/Neon) or DATABASE_URL locally. See .env.example."
       );
     }
     const value = Reflect.get(instance as object, prop, receiver);
