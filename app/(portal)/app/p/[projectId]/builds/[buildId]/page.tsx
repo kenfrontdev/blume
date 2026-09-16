@@ -16,11 +16,18 @@ export default async function BuildPage({ params }: PageProps) {
 
   if (isPortalEmpty(data)) {
     return (
-      <div className="panel panel-pad empty-state">
-        <h1>Build</h1>
-        <p>{data.message}</p>
-        <p style={{ marginTop: "1rem" }}>
-          <Link href={`/p/${projectId}`}>← Back to dashboard</Link>
+      <div className="rounded-sm border border-border bg-card p-6">
+        <h1 className="mb-2 font-mono text-2xl font-semibold tracking-tight">
+          Build
+        </h1>
+        <p className="text-muted-foreground">{data.message}</p>
+        <p className="mt-4">
+          <Link
+            href={`/p/${projectId}`}
+            className="text-sm text-foreground underline-offset-2 hover:underline"
+          >
+            ← Back to dashboard
+          </Link>
         </p>
       </div>
     );
@@ -42,17 +49,27 @@ export default async function BuildPage({ params }: PageProps) {
 
   return (
     <>
-      <header className="page-header">
+      <header className="mb-8 flex flex-wrap items-start justify-between gap-4 border-b border-border pb-6">
         <div>
-          <p style={{ margin: "0 0 0.35rem", color: "var(--ink-faint)" }}>
-            <Link href={`/p/${projectId}`}>Dashboard</Link>
+          <p className="mb-1 text-xs text-muted-foreground">
+            <Link
+              href={`/p/${projectId}`}
+              className="no-underline hover:text-foreground"
+            >
+              Dashboard
+            </Link>
             {" · "}
-            <Link href={`/p/${projectId}/specs/${data.spec.id}`}>
+            <Link
+              href={`/p/${projectId}/specs/${data.spec.id}`}
+              className="no-underline hover:text-foreground"
+            >
               {data.spec.id}
             </Link>
           </p>
-          <h1>Build {data.build.id.slice(0, 8)}</h1>
-          <p className="lede">
+          <h1 className="font-mono text-2xl font-semibold tracking-tight">
+            Build {data.build.id.slice(0, 8)}
+          </h1>
+          <p className="mt-2 max-w-[54ch] text-muted-foreground">
             {data.spec.title} · v{data.build.specVersion} · unified timeline +
             gate actions
           </p>
@@ -60,68 +77,79 @@ export default async function BuildPage({ params }: PageProps) {
         <StatusBadge status={status} />
       </header>
 
-      <div className="build-layout">
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-          <section className="panel panel-pad">
-            <h2 style={{ marginTop: 0, fontSize: "1.1rem" }}>Trust</h2>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
-                gap: "0.75rem",
-              }}
-            >
-              <div className="metric panel" style={{ boxShadow: "none" }}>
-                <div className="label">Execution</div>
-                <div className="value">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+        <div className="flex flex-col gap-5">
+          <section className="rounded-sm border border-border bg-card p-5">
+            <h2 className="mb-4 font-mono text-sm font-semibold tracking-tight">
+              Trust
+            </h2>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="rounded-sm border border-border p-3">
+                <div className="font-mono text-[0.7rem] tracking-wide text-muted-foreground">
+                  Execution
+                </div>
+                <div className="mt-1 font-mono text-2xl font-semibold">
                   {data.build.executionScore ?? "—"}
                 </div>
               </div>
-              <div className="metric panel" style={{ boxShadow: "none" }}>
-                <div className="label">Ceiling</div>
-                <div className="value">
+              <div className="rounded-sm border border-border p-3">
+                <div className="font-mono text-[0.7rem] tracking-wide text-muted-foreground">
+                  Ceiling
+                </div>
+                <div className="mt-1 font-mono text-2xl font-semibold">
                   {data.build.confidenceCeiling ?? "—"}
                 </div>
               </div>
-              <div className="metric panel" style={{ boxShadow: "none" }}>
-                <div className="label">Verification</div>
-                <div className="value" style={{ fontSize: "1.15rem" }}>
+              <div className="rounded-sm border border-border p-3">
+                <div className="font-mono text-[0.7rem] tracking-wide text-muted-foreground">
+                  Verification
+                </div>
+                <div className="mt-1 font-mono text-base font-semibold capitalize">
                   {data.build.verificationStatus ?? "unset"}
                 </div>
               </div>
             </div>
           </section>
 
-          <section className="panel panel-pad">
-            <h2 style={{ marginTop: 0, fontSize: "1.1rem" }}>Timeline</h2>
+          <section className="rounded-sm border border-border bg-card p-5">
+            <h2 className="mb-4 font-mono text-sm font-semibold tracking-tight">
+              Timeline
+            </h2>
             {data.timeline.length === 0 ? (
-              <p style={{ color: "var(--ink-muted)", margin: 0 }}>
-                No events yet.
-              </p>
+              <p className="m-0 text-sm text-muted-foreground">No events yet.</p>
             ) : (
-              <ol className="timeline">
+              <ol className="m-0 list-none space-y-0 divide-y divide-border p-0">
                 {data.timeline.map((event) => (
-                  <li key={event.id} className="timeline-item">
-                    <time dateTime={event.at.toISOString()}>
+                  <li key={event.id} className="grid grid-cols-[1fr] gap-1 py-3 first:pt-0 last:pb-0">
+                    <time
+                      className="font-mono text-[0.7rem] text-muted-foreground"
+                      dateTime={event.at.toISOString()}
+                    >
                       {event.at.toLocaleString()} · {event.kind}
                     </time>
-                    <strong>{event.title}</strong>
-                    {event.detail && <p>{event.detail}</p>}
+                    <strong className="text-sm font-medium">{event.title}</strong>
+                    {event.detail && (
+                      <p className="m-0 text-sm text-muted-foreground">
+                        {event.detail}
+                      </p>
+                    )}
                   </li>
                 ))}
               </ol>
             )}
           </section>
 
-          <section className="panel panel-pad">
-            <h2 style={{ marginTop: 0, fontSize: "1.1rem" }}>Gate actions</h2>
-            <p style={{ color: "var(--ink-muted)", marginTop: 0 }}>
+          <section className="rounded-sm border border-border bg-card p-5">
+            <h2 className="mb-2 font-mono text-sm font-semibold tracking-tight">
+              Gate actions
+            </h2>
+            <p className="mb-4 mt-0 text-sm text-muted-foreground">
               Approve or override inline with a structured §7 reason — logged
               permanently on this build.
             </p>
             <GateActions buildId={data.build.id} />
             {data.gateDecisions.length > 0 && (
-              <ul style={{ marginTop: "1rem", paddingLeft: "1.1rem" }}>
+              <ul className="mt-4 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
                 {data.gateDecisions.map((g) => (
                   <li key={g.id}>
                     {g.decision}

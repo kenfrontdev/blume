@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import {
   OVERRIDE_REASONS,
   OVERRIDE_REASON_LABELS,
@@ -13,7 +14,7 @@ interface GateActionsProps {
   disabled?: boolean;
 }
 
-export function GateActions({ buildId, disabled }: GateActionsProps) {
+export const GateActions = ({ buildId, disabled }: GateActionsProps) => {
   const router = useRouter();
   const [reason, setReason] = useState<OverrideReason>(OVERRIDE_REASONS[0]);
   const [busy, setBusy] = useState<"approve" | "override" | null>(null);
@@ -49,47 +50,39 @@ export function GateActions({ buildId, disabled }: GateActionsProps) {
 
   if (disabled) {
     return (
-      <p style={{ color: "var(--ink-muted)", margin: 0 }}>
+      <p className="m-0 text-sm text-muted-foreground">
         Gate actions unavailable until the database is connected.
       </p>
     );
   }
 
   return (
-    <div className="gate-actions">
-      <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-        <button
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-wrap gap-2">
+        <Button
           type="button"
-          className="btn btn-primary"
+          className="rounded-sm"
           disabled={busy !== null}
           onClick={() => void submit("approve")}
         >
           {busy === "approve" ? "Approving…" : "Approve"}
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
-          className="btn btn-danger"
+          variant="destructive"
+          className="rounded-sm"
           disabled={busy !== null}
           onClick={() => void submit("override")}
         >
           {busy === "override" ? "Recording…" : "Override & ship"}
-        </button>
+        </Button>
       </div>
-      <label>
-        <span
-          style={{
-            display: "block",
-            fontSize: "0.75rem",
-            fontWeight: 700,
-            letterSpacing: "0.06em",
-            textTransform: "uppercase",
-            color: "var(--ink-faint)",
-            marginBottom: "0.35rem",
-          }}
-        >
+      <label className="block max-w-sm">
+        <span className="mb-1.5 block font-mono text-[0.7rem] tracking-wide text-muted-foreground">
           Override reason (§7)
         </span>
         <select
+          className="h-9 w-full rounded-sm border border-border bg-card px-2 text-sm outline-none focus-visible:ring-1 focus-visible:ring-ring"
           value={reason}
           onChange={(e) => setReason(e.target.value as OverrideReason)}
           aria-label="Structured override reason"
@@ -102,15 +95,15 @@ export function GateActions({ buildId, disabled }: GateActionsProps) {
         </select>
       </label>
       {error && (
-        <p role="alert" style={{ color: "var(--danger)", margin: 0 }}>
+        <p role="alert" className="m-0 text-sm text-destructive">
           {error}
         </p>
       )}
       {message && (
-        <p role="status" style={{ color: "var(--ok)", margin: 0 }}>
+        <p role="status" className="m-0 text-sm text-success">
           {message}
         </p>
       )}
     </div>
   );
-}
+};

@@ -20,14 +20,18 @@ export default async function ProjectDashboardPage({
 
   if (isPortalEmpty(data)) {
     return (
-      <div className="panel panel-pad empty-state">
-        <h1>Release dashboard</h1>
-        <p>{data.message}</p>
+      <div className="rounded-sm border border-border bg-card p-6">
+        <h1 className="mb-2 font-mono text-2xl font-semibold tracking-tight">
+          Release dashboard
+        </h1>
+        <p className="text-muted-foreground">{data.message}</p>
         {data.reason === "no_database" && (
-          <p style={{ marginTop: "1rem" }}>
-            Copy <code>.env.example</code> to <code>.env</code>, set{" "}
-            <code>BLUMEDB_DATABASE_URL</code>, then run{" "}
-            <code>npm run ingest</code>.
+          <p className="mt-4 text-sm text-muted-foreground">
+            Copy <code className="font-mono text-foreground">.env.example</code>{" "}
+            to <code className="font-mono text-foreground">.env</code>, set{" "}
+            <code className="font-mono text-foreground">BLUMEDB_DATABASE_URL</code>
+            , then run{" "}
+            <code className="font-mono text-foreground">npm run ingest</code>.
           </p>
         )}
       </div>
@@ -41,20 +45,25 @@ export default async function ProjectDashboardPage({
 
   return (
     <>
-      <header className="page-header">
+      <header className="mb-8 flex flex-wrap items-start justify-between gap-4 border-b border-border pb-6">
         <div>
-          <h1>{data.project.name}</h1>
-          <p className="lede">
+          <h1 className="font-mono text-2xl font-semibold tracking-tight">
+            {data.project.name}
+          </h1>
+          <p className="mt-2 max-w-[54ch] text-muted-foreground">
             Session list — every spec and latest build, clustered by{" "}
-            <code>related_specs</code>.
+            <code className="font-mono text-sm text-foreground">
+              related_specs
+            </code>
+            .
           </p>
         </div>
-        <div style={{ textAlign: "right", color: "var(--ink-muted)" }}>
+        <div className="text-right text-sm text-muted-foreground">
           <div>
             Threshold {String(data.project.releaseThresholdDefault)} · retry cap{" "}
             {data.project.retryCapDefault}
           </div>
-          <div style={{ fontSize: "0.85rem" }}>
+          <div className="mt-1 text-xs">
             {data.specs.length} spec{data.specs.length === 1 ? "" : "s"} ·{" "}
             {data.clusters.length} cluster
             {data.clusters.length === 1 ? "" : "s"}
