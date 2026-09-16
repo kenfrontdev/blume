@@ -8,24 +8,25 @@ interface ProjectSwitcherProps {
   projects: ProjectRow[];
 }
 
-export function ProjectSwitcher({ projectId, projects }: ProjectSwitcherProps) {
+export const ProjectSwitcher = ({
+  projectId,
+  projects,
+}: ProjectSwitcherProps) => {
   const router = useRouter();
 
   if (projects.length === 0) {
     return (
-      <span style={{ color: "var(--ink-muted)", fontWeight: 600 }}>
+      <span className="text-sm font-medium text-muted-foreground">
         {projectId}
       </span>
     );
   }
 
   return (
-    <label style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
-      <span className="visually-hidden" style={{ position: "absolute", left: "-9999px" }}>
-        Project
-      </span>
+    <label className="inline-flex items-center gap-2">
+      <span className="sr-only">Project</span>
       <select
-        className="project-switcher"
+        className="h-8 rounded-sm border border-border bg-card px-2 text-sm text-foreground outline-none focus-visible:ring-1 focus-visible:ring-ring"
         value={projectId}
         aria-label="Switch project"
         onChange={(e) => router.push(`/p/${e.target.value}`)}
@@ -41,4 +42,4 @@ export function ProjectSwitcher({ projectId, projects }: ProjectSwitcherProps) {
       </select>
     </label>
   );
-}
+};

@@ -19,11 +19,18 @@ export default async function SpecPage({ params }: PageProps) {
 
   if (isPortalEmpty(data)) {
     return (
-      <div className="panel panel-pad empty-state">
-        <h1>Spec</h1>
-        <p>{data.message}</p>
-        <p style={{ marginTop: "1rem" }}>
-          <Link href={`/p/${projectId}`}>← Back to dashboard</Link>
+      <div className="rounded-sm border border-border bg-card p-6">
+        <h1 className="mb-2 font-mono text-2xl font-semibold tracking-tight">
+          Spec
+        </h1>
+        <p className="text-muted-foreground">{data.message}</p>
+        <p className="mt-4">
+          <Link
+            href={`/p/${projectId}`}
+            className="text-sm text-foreground underline-offset-2 hover:underline"
+          >
+            ← Back to dashboard
+          </Link>
         </p>
       </div>
     );
@@ -53,21 +60,31 @@ export default async function SpecPage({ params }: PageProps) {
 
   return (
     <>
-      <header className="page-header">
+      <header className="mb-8 flex flex-wrap items-start justify-between gap-4 border-b border-border pb-6">
         <div>
-          <p style={{ margin: "0 0 0.35rem", color: "var(--ink-faint)" }}>
-            <Link href={`/p/${projectId}`}>Dashboard</Link>
+          <p className="mb-1 text-xs text-muted-foreground">
+            <Link
+              href={`/p/${projectId}`}
+              className="no-underline hover:text-foreground"
+            >
+              Dashboard
+            </Link>
             {latest && (
               <>
                 {" · "}
-                <Link href={`/p/${projectId}/builds/${latest.id}`}>
+                <Link
+                  href={`/p/${projectId}/builds/${latest.id}`}
+                  className="no-underline hover:text-foreground"
+                >
                   Latest build
                 </Link>
               </>
             )}
           </p>
-          <h1>{data.spec.title}</h1>
-          <p className="lede">
+          <h1 className="font-mono text-2xl font-semibold tracking-tight">
+            {data.spec.title}
+          </h1>
+          <p className="mt-2 max-w-[54ch] text-muted-foreground">
             Editor-style view · {data.spec.layer} · v{data.spec.version} ·{" "}
             {data.spec.status}
           </p>
@@ -75,34 +92,37 @@ export default async function SpecPage({ params }: PageProps) {
         <StatusBadge status={status} />
       </header>
 
-      <div className="spec-editor">
-        <pre className="panel spec-markdown" tabIndex={0}>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.35fr_0.65fr]">
+        <pre
+          className="overflow-auto rounded-sm border border-border bg-card p-5 font-mono text-sm leading-relaxed text-foreground"
+          tabIndex={0}
+        >
           {markdown}
         </pre>
 
-        <aside className="metric-stack">
-          <div className="panel metric">
-            <div className="label">Confidence ceiling</div>
-            <div className="value">
+        <aside className="flex flex-col gap-4">
+          <div className="rounded-sm border border-border bg-card p-4">
+            <div className="font-mono text-[0.7rem] tracking-wide text-muted-foreground">
+              Confidence ceiling
+            </div>
+            <div className="mt-1 font-mono text-2xl font-semibold">
               {completeness.confidenceCeiling ?? "—"}
             </div>
-            <p style={{ margin: "0.35rem 0 0", color: "var(--ink-muted)", fontSize: "0.85rem" }}>
+            <p className="mt-1 mb-0 text-xs text-muted-foreground">
               {completeness.foundationalPass
                 ? "Foundational pass"
                 : "Foundational fail — hard stop"}
             </p>
           </div>
 
-          <div className="panel panel-pad">
-            <div className="label" style={{ marginBottom: "0.5rem" }}>
+          <div className="rounded-sm border border-border bg-card p-4">
+            <div className="mb-2 font-mono text-[0.7rem] tracking-wide text-muted-foreground">
               Completeness gaps
             </div>
             {completeness.gaps.length === 0 ? (
-              <p style={{ margin: 0, color: "var(--ok)", fontSize: "0.9rem" }}>
-                No gaps flagged.
-              </p>
+              <p className="m-0 text-sm text-success">No gaps flagged.</p>
             ) : (
-              <ul style={{ margin: 0, paddingLeft: "1.1rem", fontSize: "0.85rem" }}>
+              <ul className="m-0 list-disc space-y-1 pl-4 text-xs text-foreground">
                 {completeness.gaps.map((gap, i) => (
                   <li key={`${gap.code}-${i}`}>
                     <strong>{gap.tier}</strong>: {gap.message}
@@ -112,38 +132,44 @@ export default async function SpecPage({ params }: PageProps) {
             )}
           </div>
 
-          <div className="panel panel-pad">
-            <div className="label" style={{ marginBottom: "0.5rem" }}>
+          <div className="rounded-sm border border-border bg-card p-4">
+            <div className="mb-2 font-mono text-[0.7rem] tracking-wide text-muted-foreground">
               Related specs
             </div>
             {data.spec.relatedSpecs.length === 0 ? (
-              <p style={{ margin: 0, color: "var(--ink-muted)", fontSize: "0.9rem" }}>
-                None linked.
-              </p>
+              <p className="m-0 text-sm text-muted-foreground">None linked.</p>
             ) : (
-              <ul style={{ margin: 0, paddingLeft: "1.1rem" }}>
+              <ul className="m-0 list-disc space-y-1 pl-4 text-sm">
                 {data.spec.relatedSpecs.map((id) => (
                   <li key={id}>
-                    <Link href={`/p/${projectId}/specs/${id}`}>{id}</Link>
+                    <Link
+                      href={`/p/${projectId}/specs/${id}`}
+                      className="font-mono text-foreground no-underline hover:underline"
+                    >
+                      {id}
+                    </Link>
                   </li>
                 ))}
               </ul>
             )}
           </div>
 
-          <div className="panel panel-pad">
-            <div className="label" style={{ marginBottom: "0.5rem" }}>
+          <div className="rounded-sm border border-border bg-card p-4">
+            <div className="mb-2 font-mono text-[0.7rem] tracking-wide text-muted-foreground">
               Builds
             </div>
             {data.builds.length === 0 ? (
-              <p style={{ margin: 0, color: "var(--ink-muted)", fontSize: "0.9rem" }}>
+              <p className="m-0 text-sm text-muted-foreground">
                 No builds recorded.
               </p>
             ) : (
-              <ul style={{ margin: 0, paddingLeft: "1.1rem", fontSize: "0.9rem" }}>
+              <ul className="m-0 list-disc space-y-1 pl-4 text-sm">
                 {data.builds.map((b) => (
                   <li key={b.id}>
-                    <Link href={`/p/${projectId}/builds/${b.id}`}>
+                    <Link
+                      href={`/p/${projectId}/builds/${b.id}`}
+                      className="font-mono text-foreground no-underline hover:underline"
+                    >
                       {b.id.slice(0, 8)}… · {b.status}
                     </Link>
                   </li>

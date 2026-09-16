@@ -2,13 +2,16 @@
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import type { SearchHit } from "@/lib/portal/queries";
 
 interface CommandPaletteProps {
   projectId: string;
 }
 
-export function CommandPalette({ projectId }: CommandPaletteProps) {
+export const CommandPalette = ({ projectId }: CommandPaletteProps) => {
   const router = useRouter();
   const dialogId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -68,7 +71,7 @@ export function CommandPalette({ projectId }: CommandPaletteProps) {
       try {
         const res = await fetch(
           `/api/search?q=${encodeURIComponent(q)}&projectId=${encodeURIComponent(projectId)}`,
-          { signal: controller.signal }
+          { signal: controller.signal },
         );
         const data = (await res.json()) as {
           hits?: SearchHit[];
@@ -101,34 +104,31 @@ export function CommandPalette({ projectId }: CommandPaletteProps) {
     router.push(hit.href);
   };
 
-  if (!open) {
-    return (
-      <button
-        type="button"
-        className="btn"
-        onClick={() => setOpen(true)}
-        aria-haspopup="dialog"
-        aria-controls={dialogId}
-      >
-        Search <span className="kbd">⌘K</span>
-      </button>
-    );
-  }
+  const trigger = (
+    <Button
+      type="button"
+      variant="outline"
+      size="sm"
+      className="rounded-sm"
+      onClick={() => setOpen(true)}
+      aria-haspopup="dialog"
+      aria-expanded={open}
+      aria-controls={dialogId}
+    >
+      Search{" "}
+      <kbd className="ml-1 rounded-sm border border-border bg-muted px-1 font-mono text-[0.65rem] text-muted-foreground">
+        ⌘K
+      </kbd>
+    </Button>
+  );
+
+  if (!open) return trigger;
 
   return (
     <>
-      <button
-        type="button"
-        className="btn"
-        onClick={() => setOpen(true)}
-        aria-haspopup="dialog"
-        aria-expanded="true"
-        aria-controls={dialogId}
-      >
-        Search <span className="kbd">⌘K</span>
-      </button>
+      {trigger}
       <div
-        className="cmd-overlay"
+        className="fixed inset-0 z-50 flex items-start justify-center bg-foreground/20 px-4 pt-[12vh]"
         role="presentation"
         onMouseDown={(e) => {
           if (e.target === e.currentTarget) close();
@@ -136,13 +136,14 @@ export function CommandPalette({ projectId }: CommandPaletteProps) {
       >
         <div
           id={dialogId}
-          className="cmd-dialog"
+          className="w-full max-w-xl overflow-hidden rounded-sm border border-border bg-card shadow-lg"
           role="dialog"
           aria-modal="true"
           aria-label="Command palette"
         >
-          <input
+          <Input
             ref={inputRef}
+            className="rounded-none border-0 border-b border-border px-4 py-6 text-base shadow-none focus-visible:ring-0"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search specs, builds, projects…"
@@ -154,7 +155,9 @@ export function CommandPalette({ projectId }: CommandPaletteProps) {
             onKeyDown={(e) => {
               if (e.key === "ArrowDown") {
                 e.preventDefault();
-                setSelected((i) => Math.min(i + 1, Math.max(hits.length - 1, 0)));
+                setSelected((i) =>
+                  Math.min(i + 1, Math.max(hits.length - 1, 0)),
+                );
               } else if (e.key === "ArrowUp") {
                 e.preventDefault();
                 setSelected((i) => Math.max(i - 1, 0));
@@ -167,19 +170,21 @@ export function CommandPalette({ projectId }: CommandPaletteProps) {
               }
             }}
           />
-          <ul id={`${dialogId}-list`} className="cmd-list" role="listbox">
+          <ul
+            id={`${dialogId}-list`}
+            className="max-h-72 overflow-y-auto py-1"
+            role="listbox"
+          >
             {loading && (
-              <li className="cmd-hint" style={{ border: "none" }}>
+              <li className="px-4 py-3 text-sm text-muted-foreground">
                 Searching…
               </li>
             )}
             {error && (
-              <li className="cmd-hint" style={{ border: "none", color: "var(--danger)" }}>
-                {error}
-              </li>
+              <li className="px-4 py-3 text-sm text-destructive">{error}</li>
             )}
             {!loading && !error && query.trim() && hits.length === 0 && (
-              <li className="cmd-hint" style={{ border: "none" }}>
+              <li className="px-4 py-3 text-sm text-muted-foreground">
                 No matches in this project.
               </li>
             )}
@@ -189,24 +194,31 @@ export function CommandPalette({ projectId }: CommandPaletteProps) {
                   type="button"
                   id={`${dialogId}-opt-${index}`}
                   role="option"
-                  className="cmd-item"
+                  className={cn(
+                    "flex w-full flex-col items-start px-4 py-2.5 text-left transition-colors",
+                    index === selected
+                      ? "bg-muted text-foreground"
+                      : "hover:bg-muted/50",
+                  )}
                   aria-selected={index === selected}
                   onMouseEnter={() => setSelected(index)}
                   onClick={() => go(hit)}
                 >
-                  <div className="title">{hit.title}</div>
+                  <div className="text-sm font-medium">{hit.title}</div>
                   {hit.subtitle && (
-                    <div className="subtitle">{hit.subtitle}</div>
+                    <div className="font-mono text-xs text-muted-foreground">
+                      {hit.subtitle}
+                    </div>
                   )}
                 </button>
               </li>
             ))}
           </ul>
-          <div className="cmd-hint">
+          <div className="border-t border-border px-4 py-2 font-mono text-[0.7rem] text-muted-foreground">
             Defaults to current project · Esc to close · ↑↓ Enter to navigate
           </div>
         </div>
       </div>
     </>
   );
-}
+};
