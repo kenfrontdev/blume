@@ -21,7 +21,7 @@ export const GateActions = ({ buildId, disabled }: GateActionsProps) => {
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
-  const submit = async (action: "approve" | "override") => {
+  const handleSubmit = async (action: "approve" | "override") => {
     setBusy(action);
     setError(null);
     setMessage(null);
@@ -61,28 +61,26 @@ export const GateActions = ({ buildId, disabled }: GateActionsProps) => {
       <div className="flex flex-wrap gap-2">
         <Button
           type="button"
-          className="rounded-sm"
           disabled={busy !== null}
-          onClick={() => void submit("approve")}
+          onClick={() => void handleSubmit("approve")}
         >
           {busy === "approve" ? "Approving…" : "Approve"}
         </Button>
         <Button
           type="button"
-          variant="destructive"
-          className="rounded-sm"
+          variant="outline"
           disabled={busy !== null}
-          onClick={() => void submit("override")}
+          onClick={() => void handleSubmit("override")}
         >
           {busy === "override" ? "Recording…" : "Override & ship"}
         </Button>
       </div>
       <label className="block max-w-sm">
-        <span className="mb-1.5 block font-mono text-[0.7rem] tracking-wide text-muted-foreground">
+        <span className="mb-1.5 block font-mono text-[0.7rem] text-muted-foreground">
           Override reason (§7)
         </span>
         <select
-          className="h-9 w-full rounded-sm border border-border bg-card px-2 text-sm outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          className="h-8 w-full border border-border bg-card px-2 text-sm outline-none focus-visible:border-ring"
           value={reason}
           onChange={(e) => setReason(e.target.value as OverrideReason)}
           aria-label="Structured override reason"
@@ -100,7 +98,7 @@ export const GateActions = ({ buildId, disabled }: GateActionsProps) => {
         </p>
       )}
       {message && (
-        <p role="status" className="m-0 text-sm text-success">
+        <p role="status" className="m-0 text-sm text-muted-foreground">
           {message}
         </p>
       )}

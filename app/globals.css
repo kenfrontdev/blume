@@ -41,6 +41,7 @@
     --ring: 215 22% 10%;
 
     --radius: 0.1875rem; /* 3px — sharp, document-style; see design language doc */
+    --radius-md: 0.1875rem;
   }
 
   /* Dark mode intentionally not designed yet — Blume's document metaphor

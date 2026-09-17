@@ -20,11 +20,11 @@ export default async function ProjectDashboardPage({
 
   if (isPortalEmpty(data)) {
     return (
-      <div className="rounded-sm border border-border bg-card p-6">
+      <div className="border border-border bg-card p-5">
         <h1 className="mb-2 font-mono text-2xl font-semibold tracking-tight">
           Release dashboard
         </h1>
-        <p className="text-muted-foreground">{data.message}</p>
+        <p className="max-w-[54ch] text-muted-foreground">{data.message}</p>
         {data.reason === "no_database" && (
           <p className="mt-4 text-sm text-muted-foreground">
             Copy <code className="font-mono text-foreground">.env.example</code>{" "}
@@ -58,7 +58,7 @@ export default async function ProjectDashboardPage({
             .
           </p>
         </div>
-        <div className="text-right text-sm text-muted-foreground">
+        <div className="text-right font-mono text-sm text-muted-foreground">
           <div>
             Threshold {String(data.project.releaseThresholdDefault)} · retry cap{" "}
             {data.project.retryCapDefault}

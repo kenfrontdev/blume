@@ -19,7 +19,7 @@ export default async function SpecPage({ params }: PageProps) {
 
   if (isPortalEmpty(data)) {
     return (
-      <div className="rounded-sm border border-border bg-card p-6">
+      <div className="border border-border bg-card p-5">
         <h1 className="mb-2 font-mono text-2xl font-semibold tracking-tight">
           Spec
         </h1>
@@ -62,7 +62,7 @@ export default async function SpecPage({ params }: PageProps) {
     <>
       <header className="mb-8 flex flex-wrap items-start justify-between gap-4 border-b border-border pb-6">
         <div>
-          <p className="mb-1 text-xs text-muted-foreground">
+          <p className="mb-1 font-mono text-xs text-muted-foreground">
             <Link
               href={`/p/${projectId}`}
               className="no-underline hover:text-foreground"
@@ -92,35 +92,43 @@ export default async function SpecPage({ params }: PageProps) {
         <StatusBadge status={status} />
       </header>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.35fr_0.65fr]">
+      <div className="grid grid-cols-1 gap-0 lg:grid-cols-[1.35fr_0.65fr] lg:border lg:border-border">
         <pre
-          className="overflow-auto rounded-sm border border-border bg-card p-5 font-mono text-sm leading-relaxed text-foreground"
+          className="overflow-auto border border-border bg-card p-5 font-mono text-sm leading-relaxed text-foreground lg:border-0 lg:border-r"
           tabIndex={0}
         >
           {markdown}
         </pre>
 
-        <aside className="flex flex-col gap-4">
-          <div className="rounded-sm border border-border bg-card p-4">
-            <div className="font-mono text-[0.7rem] tracking-wide text-muted-foreground">
+        <aside className="flex flex-col divide-y divide-border border border-t-0 border-border bg-card lg:border-0">
+          <div className="p-4">
+            <div className="font-mono text-[0.7rem] text-muted-foreground">
               Confidence ceiling
             </div>
             <div className="mt-1 font-mono text-2xl font-semibold">
               {completeness.confidenceCeiling ?? "—"}
             </div>
-            <p className="mt-1 mb-0 text-xs text-muted-foreground">
+            <p
+              className={
+                completeness.foundationalPass
+                  ? "mb-0 mt-1 text-xs text-success"
+                  : "mb-0 mt-1 text-xs text-destructive"
+              }
+            >
               {completeness.foundationalPass
                 ? "Foundational pass"
                 : "Foundational fail — hard stop"}
             </p>
           </div>
 
-          <div className="rounded-sm border border-border bg-card p-4">
-            <div className="mb-2 font-mono text-[0.7rem] tracking-wide text-muted-foreground">
+          <div className="p-4">
+            <div className="mb-2 font-mono text-[0.7rem] text-muted-foreground">
               Completeness gaps
             </div>
             {completeness.gaps.length === 0 ? (
-              <p className="m-0 text-sm text-success">No gaps flagged.</p>
+              <p className="m-0 text-sm text-muted-foreground">
+                No gaps flagged.
+              </p>
             ) : (
               <ul className="m-0 list-disc space-y-1 pl-4 text-xs text-foreground">
                 {completeness.gaps.map((gap, i) => (
@@ -132,14 +140,14 @@ export default async function SpecPage({ params }: PageProps) {
             )}
           </div>
 
-          <div className="rounded-sm border border-border bg-card p-4">
-            <div className="mb-2 font-mono text-[0.7rem] tracking-wide text-muted-foreground">
+          <div className="p-4">
+            <div className="mb-2 font-mono text-[0.7rem] text-muted-foreground">
               Related specs
             </div>
             {data.spec.relatedSpecs.length === 0 ? (
               <p className="m-0 text-sm text-muted-foreground">None linked.</p>
             ) : (
-              <ul className="m-0 list-disc space-y-1 pl-4 text-sm">
+              <ul className="m-0 space-y-1 text-sm">
                 {data.spec.relatedSpecs.map((id) => (
                   <li key={id}>
                     <Link
@@ -154,8 +162,8 @@ export default async function SpecPage({ params }: PageProps) {
             )}
           </div>
 
-          <div className="rounded-sm border border-border bg-card p-4">
-            <div className="mb-2 font-mono text-[0.7rem] tracking-wide text-muted-foreground">
+          <div className="p-4">
+            <div className="mb-2 font-mono text-[0.7rem] text-muted-foreground">
               Builds
             </div>
             {data.builds.length === 0 ? (
@@ -163,12 +171,12 @@ export default async function SpecPage({ params }: PageProps) {
                 No builds recorded.
               </p>
             ) : (
-              <ul className="m-0 list-disc space-y-1 pl-4 text-sm">
+              <ul className="m-0 divide-y divide-border">
                 {data.builds.map((b) => (
-                  <li key={b.id}>
+                  <li key={b.id} className="py-1.5 first:pt-0 last:pb-0">
                     <Link
                       href={`/p/${projectId}/builds/${b.id}`}
-                      className="font-mono text-foreground no-underline hover:underline"
+                      className="font-mono text-sm text-foreground no-underline hover:underline"
                     >
                       {b.id.slice(0, 8)}… · {b.status}
                     </Link>

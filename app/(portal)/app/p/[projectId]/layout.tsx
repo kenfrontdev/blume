@@ -20,7 +20,7 @@ export default async function PortalLayout({
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <header className="flex h-14 items-center gap-4 border-b border-border px-6">
+      <header className="flex h-12 items-center gap-4 border-b border-border px-6">
         <Link
           href={`/p/${projectId}`}
           className="font-mono text-sm font-semibold tracking-tight text-foreground no-underline"

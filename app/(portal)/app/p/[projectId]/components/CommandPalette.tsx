@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,7 +14,6 @@ interface CommandPaletteProps {
 export const CommandPalette = ({ projectId }: CommandPaletteProps) => {
   const router = useRouter();
   const dialogId = useId();
-  const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [hits, setHits] = useState<SearchHit[]>([]);
@@ -48,12 +47,6 @@ export const CommandPalette = ({ projectId }: CommandPaletteProps) => {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open, close]);
-
-  useEffect(() => {
-    if (!open) return;
-    const t = window.setTimeout(() => inputRef.current?.focus(), 0);
-    return () => window.clearTimeout(t);
-  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -109,14 +102,13 @@ export const CommandPalette = ({ projectId }: CommandPaletteProps) => {
       type="button"
       variant="outline"
       size="sm"
-      className="rounded-sm"
       onClick={() => setOpen(true)}
       aria-haspopup="dialog"
       aria-expanded={open}
       aria-controls={dialogId}
     >
       Search{" "}
-      <kbd className="ml-1 rounded-sm border border-border bg-muted px-1 font-mono text-[0.65rem] text-muted-foreground">
+      <kbd className="ml-1 border border-border bg-muted px-1 font-mono text-[0.65rem] text-muted-foreground">
         ⌘K
       </kbd>
     </Button>
@@ -128,7 +120,7 @@ export const CommandPalette = ({ projectId }: CommandPaletteProps) => {
     <>
       {trigger}
       <div
-        className="fixed inset-0 z-50 flex items-start justify-center bg-foreground/20 px-4 pt-[12vh]"
+        className="fixed inset-0 z-50 flex items-start justify-center bg-foreground/10 px-4 pt-[12vh]"
         role="presentation"
         onMouseDown={(e) => {
           if (e.target === e.currentTarget) close();
@@ -136,14 +128,14 @@ export const CommandPalette = ({ projectId }: CommandPaletteProps) => {
       >
         <div
           id={dialogId}
-          className="w-full max-w-xl overflow-hidden rounded-sm border border-border bg-card shadow-lg"
+          className="w-full max-w-xl overflow-hidden border border-border bg-card"
           role="dialog"
           aria-modal="true"
           aria-label="Command palette"
         >
           <Input
-            ref={inputRef}
-            className="rounded-none border-0 border-b border-border px-4 py-6 text-base shadow-none focus-visible:ring-0"
+            autoFocus
+            className="rounded-none border-0 border-b border-border px-4 focus-visible:ring-0"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search specs, builds, projects…"

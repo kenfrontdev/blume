@@ -16,7 +16,7 @@ export default async function BuildPage({ params }: PageProps) {
 
   if (isPortalEmpty(data)) {
     return (
-      <div className="rounded-sm border border-border bg-card p-6">
+      <div className="border border-border bg-card p-5">
         <h1 className="mb-2 font-mono text-2xl font-semibold tracking-tight">
           Build
         </h1>
@@ -51,7 +51,7 @@ export default async function BuildPage({ params }: PageProps) {
     <>
       <header className="mb-8 flex flex-wrap items-start justify-between gap-4 border-b border-border pb-6">
         <div>
-          <p className="mb-1 text-xs text-muted-foreground">
+          <p className="mb-1 font-mono text-xs text-muted-foreground">
             <Link
               href={`/p/${projectId}`}
               className="no-underline hover:text-foreground"
@@ -78,30 +78,30 @@ export default async function BuildPage({ params }: PageProps) {
       </header>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-        <div className="flex flex-col gap-5">
-          <section className="rounded-sm border border-border bg-card p-5">
+        <div className="flex flex-col">
+          <section className="border border-border bg-card p-5">
             <h2 className="mb-4 font-mono text-sm font-semibold tracking-tight">
               Trust
             </h2>
-            <div className="grid grid-cols-3 gap-3">
-              <div className="rounded-sm border border-border p-3">
-                <div className="font-mono text-[0.7rem] tracking-wide text-muted-foreground">
+            <div className="grid grid-cols-3 divide-x divide-border border border-border">
+              <div className="p-3">
+                <div className="font-mono text-[0.7rem] text-muted-foreground">
                   Execution
                 </div>
                 <div className="mt-1 font-mono text-2xl font-semibold">
                   {data.build.executionScore ?? "—"}
                 </div>
               </div>
-              <div className="rounded-sm border border-border p-3">
-                <div className="font-mono text-[0.7rem] tracking-wide text-muted-foreground">
+              <div className="p-3">
+                <div className="font-mono text-[0.7rem] text-muted-foreground">
                   Ceiling
                 </div>
                 <div className="mt-1 font-mono text-2xl font-semibold">
                   {data.build.confidenceCeiling ?? "—"}
                 </div>
               </div>
-              <div className="rounded-sm border border-border p-3">
-                <div className="font-mono text-[0.7rem] tracking-wide text-muted-foreground">
+              <div className="p-3">
+                <div className="font-mono text-[0.7rem] text-muted-foreground">
                   Verification
                 </div>
                 <div className="mt-1 font-mono text-base font-semibold capitalize">
@@ -111,53 +111,71 @@ export default async function BuildPage({ params }: PageProps) {
             </div>
           </section>
 
-          <section className="rounded-sm border border-border bg-card p-5">
+          <section className="border-x border-b border-border bg-card p-5">
             <h2 className="mb-4 font-mono text-sm font-semibold tracking-tight">
               Timeline
             </h2>
             {data.timeline.length === 0 ? (
               <p className="m-0 text-sm text-muted-foreground">No events yet.</p>
             ) : (
-              <ol className="m-0 list-none space-y-0 divide-y divide-border p-0">
-                {data.timeline.map((event) => (
-                  <li key={event.id} className="grid grid-cols-[1fr] gap-1 py-3 first:pt-0 last:pb-0">
-                    <time
-                      className="font-mono text-[0.7rem] text-muted-foreground"
-                      dateTime={event.at.toISOString()}
-                    >
-                      {event.at.toLocaleString()} · {event.kind}
-                    </time>
-                    <strong className="text-sm font-medium">{event.title}</strong>
-                    {event.detail && (
-                      <p className="m-0 text-sm text-muted-foreground">
-                        {event.detail}
-                      </p>
-                    )}
+              <ol className="m-0 list-none divide-y divide-border p-0">
+                {data.timeline.map((event, index) => (
+                  <li
+                    key={event.id}
+                    className="grid grid-cols-[3rem_1fr] gap-4 py-4 first:pt-0 last:pb-0"
+                  >
+                    <span className="pt-0.5 font-mono text-xs text-muted-foreground">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <div>
+                      <time
+                        className="font-mono text-[0.7rem] text-muted-foreground"
+                        dateTime={event.at.toISOString()}
+                      >
+                        {event.at.toLocaleString()} · {event.kind}
+                      </time>
+                      <strong className="mt-0.5 block font-mono text-sm font-medium">
+                        {event.title}
+                      </strong>
+                      {event.detail && (
+                        <p className="m-0 mt-1 max-w-[54ch] text-sm text-muted-foreground">
+                          {event.detail}
+                        </p>
+                      )}
+                    </div>
                   </li>
                 ))}
               </ol>
             )}
           </section>
 
-          <section className="rounded-sm border border-border bg-card p-5">
+          <section className="border-x border-b border-border bg-card p-5">
             <h2 className="mb-2 font-mono text-sm font-semibold tracking-tight">
               Gate actions
             </h2>
-            <p className="mb-4 mt-0 text-sm text-muted-foreground">
+            <p className="mb-4 mt-0 max-w-[54ch] text-sm text-muted-foreground">
               Approve or override inline with a structured §7 reason — logged
               permanently on this build.
             </p>
             <GateActions buildId={data.build.id} />
             {data.gateDecisions.length > 0 && (
-              <ul className="mt-4 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+              <ol className="mt-4 divide-y divide-border border-t border-border p-0">
                 {data.gateDecisions.map((g) => (
-                  <li key={g.id}>
-                    {g.decision}
-                    {g.overrideReason ? ` · ${g.overrideReason}` : ""} ·{" "}
-                    {g.decidedAt.toLocaleString()}
+                  <li key={g.id} className="py-2 font-mono text-sm">
+                    <span className="text-foreground">{g.decision}</span>
+                    {g.overrideReason ? (
+                      <span className="text-muted-foreground">
+                        {" "}
+                        · {g.overrideReason}
+                      </span>
+                    ) : null}
+                    <span className="text-muted-foreground">
+                      {" "}
+                      · {g.decidedAt.toLocaleString()}
+                    </span>
                   </li>
                 ))}
-              </ul>
+              </ol>
             )}
           </section>
         </div>

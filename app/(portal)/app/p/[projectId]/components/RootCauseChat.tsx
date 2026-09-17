@@ -94,13 +94,13 @@ export const RootCauseChat = ({
     }
   };
 
-  const onSubmit = (event: FormEvent) => {
+  const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     void ask(input);
   };
 
   return (
-    <div className="flex min-h-[28rem] flex-col rounded-sm border border-border bg-card">
+    <div className="flex min-h-[28rem] flex-col border border-border bg-card">
       <div className="border-b border-border px-4 py-3 font-mono text-sm font-semibold tracking-tight">
         Root-cause chat
       </div>
@@ -118,7 +118,7 @@ export const RootCauseChat = ({
           <div
             key={m.id}
             className={cn(
-              "max-w-[95%] rounded-sm border px-3 py-2 text-sm leading-relaxed",
+              "max-w-[95%] border px-3 py-2 text-sm leading-relaxed",
               m.role === "user"
                 ? "self-end border-foreground bg-foreground text-background"
                 : "self-start border-border bg-background text-foreground",
@@ -126,7 +126,7 @@ export const RootCauseChat = ({
           >
             {m.text}
             {m.citations && m.citations.length > 0 && (
-              <ul className="mt-2 space-y-1 border-t border-border/60 pt-2 font-mono text-[0.7rem] text-muted-foreground">
+              <ul className="mt-2 space-y-1 border-t border-border pt-2 font-mono text-[0.7rem] text-muted-foreground">
                 {m.citations.map((c) => (
                   <li key={`${c.kind}-${c.ref}`}>
                     [{c.kind}] {c.ref} — {c.excerpt}
@@ -139,17 +139,16 @@ export const RootCauseChat = ({
       </div>
       <form
         className="flex gap-2 border-t border-border p-3"
-        onSubmit={onSubmit}
+        onSubmit={handleSubmit}
       >
         <Input
-          className="rounded-sm"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="What failed? Swarm? Score?"
           aria-label="Ask about this build"
           disabled={busy}
         />
-        <Button type="submit" className="rounded-sm" disabled={busy}>
+        <Button type="submit" disabled={busy}>
           {busy ? "…" : "Ask"}
         </Button>
       </form>

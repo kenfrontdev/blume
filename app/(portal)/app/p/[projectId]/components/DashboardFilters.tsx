@@ -1,9 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import { PORTAL_STATUSES, type PortalStatus } from "@/lib/portal/status";
 import { StatusBadge } from "./StatusBadge";
-import { cn } from "@/lib/utils";
 import type { SpecCluster } from "@/lib/portal/clusters";
 import type { SpecWithLatestBuild } from "@/lib/portal/queries";
 
@@ -20,7 +20,7 @@ export const DashboardFilters = ({
 }: DashboardFiltersProps) => {
   const router = useRouter();
 
-  const setFilter = (next: PortalStatus | "all") => {
+  const handleFilter = (next: PortalStatus | "all") => {
     const url =
       next === "all"
         ? `/p/${projectId}`
@@ -41,44 +41,38 @@ export const DashboardFilters = ({
   return (
     <>
       <div
-        className="mb-8 flex flex-wrap gap-2"
+        className="mb-8 flex flex-wrap gap-1.5"
         role="group"
         aria-label="Filter by status"
       >
-        <button
+        <Button
           type="button"
-          className={cn(
-            "rounded-sm border px-3 py-1.5 text-sm capitalize transition-colors",
-            activeFilter === "all"
-              ? "border-foreground bg-foreground text-background"
-              : "border-border bg-card text-muted-foreground hover:text-foreground",
-          )}
+          size="sm"
+          variant={activeFilter === "all" ? "default" : "outline"}
           aria-pressed={activeFilter === "all"}
-          onClick={() => setFilter("all")}
+          onClick={() => handleFilter("all")}
         >
           All
-        </button>
+        </Button>
         {PORTAL_STATUSES.map((status) => (
-          <button
+          <Button
             key={status}
             type="button"
-            className={cn(
-              "rounded-sm border px-3 py-1.5 text-sm capitalize transition-colors",
-              activeFilter === status
-                ? "border-foreground bg-foreground text-background"
-                : "border-border bg-card text-muted-foreground hover:text-foreground",
-            )}
+            size="sm"
+            variant={activeFilter === status ? "default" : "outline"}
             aria-pressed={activeFilter === status}
-            onClick={() => setFilter(status)}
+            onClick={() => handleFilter(status)}
           >
             {status}
-          </button>
+          </Button>
         ))}
       </div>
 
       {filteredClusters.length === 0 ? (
-        <div className="rounded-sm border border-border bg-card p-6">
-          <h2 className="mb-2 text-lg font-semibold">No matching sessions</h2>
+        <div className="border border-border bg-card p-5">
+          <h2 className="mb-2 font-mono text-sm font-semibold tracking-tight">
+            No matching sessions
+          </h2>
           <p className="text-sm text-muted-foreground">
             Try another status filter, or ingest specs for this project.
           </p>
@@ -86,10 +80,10 @@ export const DashboardFilters = ({
       ) : (
         filteredClusters.map((cluster) => (
           <section key={cluster.id} className="mb-8">
-            <h2 className="mb-3 font-mono text-xs tracking-wide text-muted-foreground">
+            <h2 className="mb-3 font-mono text-xs text-muted-foreground">
               Cluster · {cluster.specs.map((s) => s.id).join(" · ")}
             </h2>
-            <div className="divide-y divide-border rounded-sm border border-border bg-card">
+            <div className="divide-y divide-border border border-border bg-card">
               {cluster.specs.map((spec) => {
                 const href = spec.latestBuild
                   ? `/p/${projectId}/builds/${spec.latestBuild.id}`
@@ -98,10 +92,10 @@ export const DashboardFilters = ({
                   <a
                     key={spec.id}
                     href={href}
-                    className="grid grid-cols-[1fr_auto_auto] items-center gap-4 px-4 py-3 no-underline transition-colors hover:bg-muted/40"
+                    className="grid grid-cols-[1fr_auto] items-center gap-4 px-4 py-3 no-underline transition-colors hover:bg-muted/40"
                   >
                     <div>
-                      <h3 className="text-sm font-medium text-foreground">
+                      <h3 className="font-mono text-sm font-medium text-foreground">
                         {spec.title}
                       </h3>
                       <div className="mt-0.5 font-mono text-xs text-muted-foreground">
@@ -112,7 +106,6 @@ export const DashboardFilters = ({
                       </div>
                     </div>
                     <StatusBadge status={spec.portalStatus} />
-                    <span className="text-xs text-muted-foreground">Open →</span>
                   </a>
                 );
               })}
